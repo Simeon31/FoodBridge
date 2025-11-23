@@ -248,6 +248,6 @@ For support, email me or open an issue in the repository.
 
 ---
 
-**Made with ?? for fighting food waste and hunger**
+** For fighting food waste and hunger**
 
 [? Back to top](#-foodbridge---food-donation-management-platform)
