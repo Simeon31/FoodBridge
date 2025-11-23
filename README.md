@@ -223,9 +223,9 @@ npm test
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ?? Authors
+## ?? Author
 
-- Your Name - *Initial work*
+- Simeon Markov
 
 ## ?? Acknowledgments
 
@@ -238,40 +238,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, email support@foodbridge.com or open an issue in the repository.
 
-## ??? Roadmap
-
-### Phase 1 - Foundation (? Complete)
-- [x] Authentication system
-- [x] Admin dashboard layout
-- [x] Responsive design
-- [x] Basic navigation
-
-### Phase 2 - Core Features (?? In Progress)
-- [ ] Donation management (CRUD)
-- [ ] Request management
-- [ ] Organization directory
-- [ ] User profiles
-
-### Phase 3 - Advanced Features (?? Planned)
-- [ ] Real-time notifications
-- [ ] Analytics and reporting
-- [ ] Email notifications
-- [ ] File uploads
-- [ ] Search and filtering
-
-### Phase 4 - Enhancements (?? Future)
-- [ ] Mobile app
-- [ ] Public donation portal
-- [ ] Integration with payment gateways
-- [ ] Multi-language support
-
-## ?? Status
-
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen)
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
-
 ## ?? Known Issues
 
 - Dark mode toggle not yet implemented (classes ready)
@@ -279,12 +245,6 @@ For support, email support@foodbridge.com or open an issue in the repository.
 - Notifications system pending
 - Some pages are placeholders
 
-## ?? Tips
-
-- Use Chrome DevTools for debugging API calls
-- Check browser console for React errors
-- Review Network tab for failed API requests
-- Enable React Developer Tools extension
 
 ---
 
