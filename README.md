@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # FoodBridge
 =======
 # ?? FoodBridge - Food Donation Management Platform
+=======
+# FoodBridge - Food Donation Management Platform
+>>>>>>> 7896b8e (Fix header formatting in README.md)
 
 A modern, full-stack web application for managing food donations, connecting donors with organizations in need.
 
