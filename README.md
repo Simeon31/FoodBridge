@@ -1,4 +1,4 @@
-# ?? FoodBridge - Food Donation Management Platform
+# FoodBridge - Food Donation Management Platform
 
 A modern, full-stack web application for managing food donations, connecting donors with organizations in need.
 
