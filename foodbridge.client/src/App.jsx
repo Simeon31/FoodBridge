@@ -5,6 +5,7 @@ import AppLayout from './layout/AppLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import './App.css';
 
 
@@ -29,7 +30,7 @@ function App() {
          <Route path="/donations" element={<div className="text-xl font-semibold text-black dark:text-white">Donations Page - Coming Soon</div>} />
     <Route path="/requests" element={<div className="text-xl font-semibold text-black dark:text-white">Requests Page - Coming Soon</div>} />
    <Route path="/organizations" element={<div className="text-xl font-semibold text-black dark:text-white">Organizations Page - Coming Soon</div>} />
- <Route path="/profile" element={<div className="text-xl font-semibold text-black dark:text-white">Profile Page - Coming Soon</div>} />
+ <Route path="/profile" element={<Profile />} />
  </Route>
 
       {/* Default Routes */}

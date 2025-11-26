@@ -1,81 +1,108 @@
 import Chart from 'react-apexcharts';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const BarChartOne = () => {
+  const { darkMode } = useTheme();
+
   const options = {
-    colors: ['#465fff'],
+    colors: ['#3c50e0'],
     chart: {
       fontFamily: 'Inter, sans-serif',
       type: 'bar',
       height: 180,
-  toolbar: {
+      toolbar: {
       show: false,
       },
+      background: 'transparent',
     },
-  plotOptions: {
-   bar: {
-        horizontal: false,
-      columnWidth: '39%',
+    plotOptions: {
+      bar: {
+  horizontal: false,
+        columnWidth: '39%',
         borderRadius: 5,
-     borderRadiusApplication: 'end',
+        borderRadiusApplication: 'end',
       },
     },
     dataLabels: {
-      enabled: false,
+  enabled: false,
     },
     stroke: {
-    show: true,
+      show: true,
       width: 4,
-  colors: ['transparent'],
+      colors: ['transparent'],
     },
     xaxis: {
       categories: [
         'Jan',
-        'Feb',
-     'Mar',
-      'Apr',
+   'Feb',
+        'Mar',
+ 'Apr',
         'May',
         'Jun',
         'Jul',
- 'Aug',
+        'Aug',
         'Sep',
         'Oct',
         'Nov',
         'Dec',
       ],
       axisBorder: {
-      show: false,
-      },
+ show: false,
+  },
       axisTicks: {
-show: false,
-   },
+        show: false,
+      },
+ labels: {
+        style: {
+     colors: darkMode ? '#9CA3AF' : '#64748b',
+        fontSize: '12px',
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: darkMode ? '#9CA3AF' : '#64748b',
+          fontSize: '12px',
+        },
+      },
+      title: {
+   text: undefined,
+      },
     },
     legend: {
       show: true,
       position: 'top',
       horizontalAlign: 'left',
       fontFamily: 'Inter',
+      labels: {
+      colors: darkMode ? '#E5E7EB' : '#1F2937',
     },
-    yaxis: {
-      title: {
-  text: undefined,
-      },
     },
     grid: {
+      borderColor: darkMode ? '#374151' : '#E5E7EB',
+ strokeDashArray: 5,
+      xaxis: {
+        lines: {
+          show: false,
+},
+      },
       yaxis: {
         lines: {
-    show: true,
-   },
+       show: true,
+        },
       },
     },
     fill: {
       opacity: 1,
     },
     tooltip: {
+      theme: darkMode ? 'dark' : 'light',
       x: {
         show: false,
       },
-  y: {
-        formatter: (val) => `${val}`,
+      y: {
+  formatter: (val) => `${val}`,
       },
     },
   };
@@ -90,8 +117,8 @@ show: false,
   return (
     <div className="max-w-full overflow-x-auto custom-scrollbar">
       <div id="chartOne" className="min-w-[1000px]">
-        <Chart options={options} series={series} type="bar" height={180} />
-   </div>
+     <Chart options={options} series={series} type="bar" height={180} />
+  </div>
     </div>
   );
 };

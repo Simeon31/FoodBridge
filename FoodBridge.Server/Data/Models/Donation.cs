@@ -25,20 +25,18 @@ namespace FoodBridge.Server.Data.Models
         public string Status { get; set; } // Pending, Inspection, Approved, Rejected, Archived
 
         [Required]
-        public int ReceivedBy { get; set; } // UserId
+        public int ReceivedBy { get; set; } 
 
-        public int? InspectedBy { get; set; } // UserId (nullable until inspected)
+        public int? InspectedBy { get; set; }
 
         public string Notes { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // Foreign Key Navigation
         [ForeignKey(nameof(DonorId))]
         public Donor Donor { get; set; }
 
-        // Navigation Properties
         public ICollection<DonationItem> DonationItems { get; set; } = new List<DonationItem>();
         public DonationReceipt DonationReceipt { get; set; }
         public ICollection<DonationAuditTrail> AuditTrail { get; set; } = new List<DonationAuditTrail>();
