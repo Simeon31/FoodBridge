@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class', // Enable dark mode with class strategy
   content: [
     "./index.html",
   "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,10 +8,10 @@ export default {
   theme: {
     extend: {
       colors: {
- primary: {
+      primary: {
           DEFAULT: '#3c50e0',
-      dark: '#2c3e9e',
-        },
+          dark: '#2c3e9e',
+     },
      secondary: {
           DEFAULT: '#80caee',
    },

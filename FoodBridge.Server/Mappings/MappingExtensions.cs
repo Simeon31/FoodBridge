@@ -1,3 +1,4 @@
+using AutoMapper;
 using FoodBridge.Server.Data;
 using FoodBridge.Server.DTOs.Auth;
 using Microsoft.AspNetCore.Identity;
@@ -5,52 +6,35 @@ using Microsoft.AspNetCore.Identity;
 namespace FoodBridge.Server.Mappings
 {
     /// <summary>
-    /// Provides mapping between domain entities and DTOs
+    /// Provides mapping between domain entities and DTOs using AutoMapper
     /// </summary>
     public static class MappingExtensions
     {
         /// <summary>
-        /// Maps ApplicationUser to UserDto
+        /// Maps ApplicationUser to UserDto with roles
+        /// Note: This is a convenience method that handles roles separately since they require UserManager
         /// </summary>
-        public static UserDto ToDto(this ApplicationUser user, IList<string> roles)
+        public static UserDto ToDto(this ApplicationUser user, IList<string> roles, IMapper mapper)
         {
-            return new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email ?? string.Empty,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Roles = roles.ToList(),
-                CreatedAt = user.CreatedAt,
-                LastLoginAt = user.LastLoginAt,
-                IsActive = user.IsActive
-            };
+            var userDto = mapper.Map<UserDto>(user);
+            userDto.Roles = roles.ToList();
+            return userDto;
         }
 
         /// <summary>
         /// Maps RegisterDto to ApplicationUser
         /// </summary>
-        public static ApplicationUser ToEntity(this RegisterDto dto)
+        public static ApplicationUser ToEntity(this RegisterDto dto, IMapper mapper)
         {
-            return new ApplicationUser
-            {
-                UserName = dto.Email,
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                EmailConfirmed = false, // Set based on your email confirmation strategy
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
+            return mapper.Map<ApplicationUser>(dto);
         }
 
         /// <summary>
         /// Updates ApplicationUser from UpdateProfileDto
         /// </summary>
-        public static void UpdateFromDto(this ApplicationUser user, UpdateProfileDto dto)
+        public static void UpdateFromDto(this ApplicationUser user, UpdateProfileDto dto, IMapper mapper)
         {
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
+            mapper.Map(dto, user);
         }
     }
 }

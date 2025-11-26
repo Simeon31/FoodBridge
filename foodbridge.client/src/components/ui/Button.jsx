@@ -8,6 +8,7 @@ const Button = ({
   className = '',
   disabled = false,
   type = 'button',
+  fullWidth = false,
   onClick,
   ...props 
 }) => {
@@ -15,7 +16,7 @@ const Button = ({
   
   const variants = {
     primary: 'bg-primary text-white hover:bg-opacity-90 focus:ring-primary disabled:opacity-50',
- secondary: 'bg-white text-gray-700 border border-stroke hover:bg-gray-50 focus:ring-gray-200 dark:bg-meta-4 dark:text-white dark:border-strokedark dark:hover:bg-meta-4/80',
+    secondary: 'bg-white text-gray-700 border border-stroke hover:bg-gray-50 focus:ring-gray-200 dark:bg-meta-4 dark:text-white dark:border-strokedark dark:hover:bg-meta-4/80',
     danger: 'bg-danger text-white hover:bg-opacity-90 focus:ring-danger disabled:opacity-50',
     success: 'bg-success text-white hover:bg-opacity-90 focus:ring-success disabled:opacity-50',
     warning: 'bg-warning text-white hover:bg-opacity-90 focus:ring-warning disabled:opacity-50',
@@ -28,17 +29,20 @@ const Button = ({
     lg: 'px-8 py-4 text-lg',
   };
 
-const buttonClasses = twMerge(
+  const widthClass = fullWidth ? 'w-full' : '';
+
+  const buttonClasses = twMerge(
     baseStyles,
     variants[variant],
-sizes[size],
+    sizes[size],
+    widthClass,
     className
   );
 
   return (
     <button
       type={type}
-    className={buttonClasses}
+      className={buttonClasses}
       disabled={disabled}
       onClick={onClick}
       {...props}
@@ -54,6 +58,7 @@ Button.propTypes = {
   size: PropTypes.oneOf(['sm', 'md', 'lg']),
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  fullWidth: PropTypes.bool,
   type: PropTypes.oneOf(['button', 'submit', 'reset']),
   onClick: PropTypes.func,
 };

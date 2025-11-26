@@ -1,5 +1,6 @@
 using FoodBridge.Server.Data;
 using FoodBridge.Server.Services;
+using FoodBridge.Server.Mappings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+
+// AutoMapper Configuration
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyMinimum32CharactersLong!";
