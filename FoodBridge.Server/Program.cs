@@ -82,6 +82,12 @@ builder.Services.AddCors(options =>
 
 // Register services
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IDonationService, DonationService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IDonorService, DonorService>();
+builder.Services.AddScoped<IWasteService, WasteService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
