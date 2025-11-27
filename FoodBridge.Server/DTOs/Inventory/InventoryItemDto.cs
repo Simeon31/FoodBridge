@@ -81,20 +81,17 @@ public DateTime? ExpirationDate { get; set; }
 
     /// <summary>
     /// DTO for inventory adjustment
- /// </summary>
+    /// </summary>
     public class InventoryAdjustmentDto
     {
         [Required]
-        public int InventoryItemId { get; set; }
-
-  [Required]
         public int QuantityChange { get; set; } // Positive for increase, negative for decrease
 
-        [Required]
+    [Required]
         [StringLength(100)]
-   public string Reason { get; set; }
+     public string Reason { get; set; }
 
-     public string Notes { get; set; }
+  public string? Notes { get; set; }
     }
 
     /// <summary>
