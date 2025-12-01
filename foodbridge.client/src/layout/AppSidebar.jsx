@@ -123,8 +123,8 @@ title: 'Inventory',
    <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 border-b border-strokedark">
         <Link to="/dashboard" className="flex items-center gap-3" onClick={closeMobile}>
           {/* Logo */}
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white font-bold text-xl shrink-0">
-         FB
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-white font-bold text-xl shrink-0">
+                      <img src="/Images/Logo.png" alt="FoodBridge Logo" className="h-10 w-10" />
           </div>
           
           {/* Brand Name */}

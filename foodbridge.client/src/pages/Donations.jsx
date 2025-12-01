@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { donationsAPI, donorsAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import DataTable from '../components/common/DataTable';
 import { FormInput, FormSelect, FormTextarea } from '../components/forms';
 
 const DonationsPage = () => {
+  const { user } = useAuth();
   const [donations, setDonations] = useState([]);
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,8 @@ const DonationsPage = () => {
   const [formData, setFormData] = useState({
     donorId: '',
     donationDate: new Date().toISOString().split('T')[0],
+    receiptNumber: '',// ? ADDED: Required field
+    receivedBy: '',     // ? ADDED: Required field (will auto-fill from user)
     notes: ''
   });
   const [formErrors, setFormErrors] = useState({});
@@ -134,10 +138,15 @@ setError('Failed to load donation details');
   };
 
   const handleCreate = () => {
-  setSelectedDonation(null);
+    setSelectedDonation(null);
+    // ? Auto-generate receipt number
+   const receiptNum = `RCP-${Date.now()}`;
+    
     setFormData({
       donorId: '',
-      donationDate: new Date().toISOString().split('T')[0],
+  donationDate: new Date().toISOString().split('T')[0],
+ receiptNumber: receiptNum,  // ? Auto-generated
+      receivedBy: user?.id || '',  // ? Auto-fill from logged-in user
       notes: ''
     });
     setFormErrors({});
@@ -146,12 +155,14 @@ setError('Failed to load donation details');
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
+setShowModal(false);
     setSelectedDonation(null);
     setFormData({
       donorId: '',
       donationDate: new Date().toISOString().split('T')[0],
-notes: ''
+      receiptNumber: '',
+   receivedBy: '',
+      notes: ''
     });
     setFormErrors({});
   };
@@ -181,6 +192,14 @@ const { name, value } = e.target;
     if (!formData.donationDate) {
       errors.donationDate = 'Donation date is required';
     }
+
+    if (!formData.receiptNumber) {
+      errors.receiptNumber = 'Receipt number is required';
+    }
+
+    if (!formData.receivedBy) {
+      errors.receivedBy = 'Received by user is required';
+    }
     
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -189,28 +208,50 @@ const { name, value } = e.target;
   const handleSave = async () => {
     if (!validateForm()) {
       return;
-    }
+  }
 
     try {
       let response;
       const payload = {
-    ...formData,
-   donorId: parseInt(formData.donorId)
+     donorId: parseInt(formData.donorId),
+    donationDate: formData.donationDate,
+    receiptNumber: formData.receiptNumber,
+  receivedBy: parseInt(formData.receivedBy) || 1,  // ? Parse to int, fallback to 1
+        notes: formData.notes || null,
+  donationItems: []  // ? Empty array for now (TODO: Add donation items UI)
       };
 
+      console.log('Sending payload:', payload);  // Debug log
+
       if (modalMode === 'create') {
-        response = await donationsAPI.create(payload);
+   response = await donationsAPI.create(payload);
       } else {
-  response = await donationsAPI.update(selectedDonation.donationId, payload);
+        response = await donationsAPI.update(selectedDonation.donationId, payload);
       }
 
-if (response.success) {
-   setSuccess(`Donation ${modalMode === 'create' ? 'created' : 'updated'} successfully`);
-        handleCloseModal();
+      if (response.success) {
+ setSuccess(`Donation ${modalMode === 'create' ? 'created' : 'updated'} successfully`);
+    handleCloseModal();
         fetchDonations();
- }
-} catch (err) {
-      setError(err.response?.data?.message || `Failed to ${modalMode} donation`);
+   }
+    } catch (err) {
+      console.error('Save donation error:', err);
+      console.error('Error response:', err.response?.data);
+   
+      let errorMessage = err.response?.data?.message || `Failed to ${modalMode} donation`;
+      
+      // Extract validation errors
+      if (err.response?.data?.errors && typeof err.response.data.errors === 'object') {
+      const errorMessages = Object.entries(err.response.data.errors)
+    .map(([field, messages]) => {
+      const msgArray = Array.isArray(messages) ? messages : [messages];
+         return `${field}: ${msgArray.join(', ')}`;
+  })
+         .join('; ');
+   errorMessage = errorMessages || errorMessage;
+      }
+ 
+  setError(errorMessage);
     }
   };
 
@@ -392,36 +433,55 @@ className="inline-flex items-center justify-center rounded-md bg-primary py-3 px
          </div>
 
       <div className="space-y-4">
-              <FormSelect
-   label="Donor"
-      name="donorId"
-        value={formData.donorId}
-     onChange={handleInputChange}
-       options={donorOptions}
-         error={formErrors.donorId}
-      required
-    placeholder="Select a donor"
-       />
-
-      <FormInput
-            label="Donation Date"
-         name="donationDate"
-    type="date"
-      value={formData.donationDate}
-  onChange={handleInputChange}
-   error={formErrors.donationDate}
-  required
+     <FormSelect
+              label="Donor"
+  name="donorId"
+  value={formData.donorId}
+           onChange={handleInputChange}
+    options={donorOptions}
+   error={formErrors.donorId}
+       required
+   placeholder="Select a donor"
       />
 
-  <FormTextarea
-   label="Notes"
-     name="notes"
+    <FormInput
+     label="Donation Date"
+       name="donationDate"
+   type="date"
+      value={formData.donationDate}
+     onChange={handleInputChange}
+     error={formErrors.donationDate}
+      required
+         />
+
+       <FormInput
+ label="Receipt Number"
+name="receiptNumber"
+      type="text"
+     value={formData.receiptNumber}
+    onChange={handleInputChange}
+      error={formErrors.receiptNumber}
+        required
+    placeholder="Auto-generated receipt number"
+     />
+
+  {modalMode === 'create' && (
+       <div className="rounded-lg border border-stroke bg-gray p-4 dark:border-strokedark dark:bg-meta-4">
+   <p className="text-sm text-gray-600 dark:text-gray-300">
+       <strong>Note:</strong> The donation will be marked as received by you ({user?.fullName || user?.email}).
+      </p>
+  </div>
+          )}
+
+    <FormTextarea
+     label="Notes"
+           name="notes"
        value={formData.notes}
-           onChange={handleInputChange}
-         placeholder="Add any additional notes..."
-         rows={4}
-          />
-    </div>
+   onChange={handleInputChange}
+    placeholder="Add any additional notes..."
+       rows={4}
+     />
+          </div>
 
  <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-stroke dark:border-strokedark">
    <button

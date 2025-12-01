@@ -76,6 +76,7 @@ namespace FoodBridge.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Staff")]
         [ProducesResponseType(typeof(ApiResponse<DonorDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateDonorDto dto)
@@ -100,6 +101,7 @@ namespace FoodBridge.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         [ProducesResponseType(typeof(ApiResponse<DonorDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateDonorDto dto)
@@ -127,6 +129,7 @@ namespace FoodBridge.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)

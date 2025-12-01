@@ -42,7 +42,6 @@ namespace FoodBridge.Server.Data.Models
         public Product Product { get; set; }
 
         public QualityInspection QualityInspection { get; set; }
-        public DonationDisposition Disposition { get; set; }
         public ICollection<WasteRecord> WasteRecords { get; set; } = new List<WasteRecord>();
         public ICollection<InventoryItem> InventoryItems { get; set; } = new List<InventoryItem>();
     }

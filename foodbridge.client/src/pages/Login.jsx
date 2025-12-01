@@ -66,7 +66,7 @@ const Login = () => {
                 {/* Logo and Brand */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary text-white font-bold text-2xl mb-4">
-                        FB
+                        <img src="/Logo.png" alt="FoodBridge Logo" className="w-10 h-10" />
                     </div>
                     <h1 className="text-3xl font-bold text-black dark:text-white mb-2">
                         Welcome to FoodBridge
@@ -263,15 +263,6 @@ const Login = () => {
                             </Link>
                         </p>
                     </div>
-
-                    {/* Development Helper */}
-                    {import.meta.env.DEV && (
-                        <div className="mt-6 p-4 bg-meta-9 dark:bg-meta-4 rounded-lg border border-stroke dark:border-strokedark">
-                            <p className="text-xs font-semibold text-black dark:text-white mb-2">Test Credentials:</p>
-                            <p className="text-xs text-bodydark mb-1">Email: admin@foodbridge.com</p>
-                            <p className="text-xs text-bodydark">Password: Admin@123</p>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

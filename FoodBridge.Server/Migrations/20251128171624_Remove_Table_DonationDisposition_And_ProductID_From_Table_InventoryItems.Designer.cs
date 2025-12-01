@@ -4,6 +4,7 @@ using FoodBridge.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodBridge.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128171624_Remove_Table_DonationDisposition_And_ProductID_From_Table_InventoryItems")]
+    partial class Remove_Table_DonationDisposition_And_ProductID_From_Table_InventoryItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,13 +366,13 @@ namespace FoodBridge.Server.Migrations
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProductId1")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantityOnHand")
                         .HasColumnType("int");
 
-                    b.Property<int>("SourceDonationItemId")
+                    b.Property<int?>("SourceDonationItemId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StorageLocationId")
@@ -380,7 +383,7 @@ namespace FoodBridge.Server.Migrations
 
                     b.HasKey("InventoryItemId");
 
-                    b.HasIndex("ProductId1");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SourceDonationItemId");
 
@@ -493,102 +496,6 @@ namespace FoodBridge.Server.Migrations
                         .IsUnique();
 
                     b.ToTable("QualityInspections");
-                });
-
-            modelBuilder.Entity("FoodBridge.Server.Data.Models.VolunteerAssignment", b =>
-                {
-                    b.Property<int>("AssignmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssignmentId"));
-
-                    b.Property<DateTime>("AssignedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CheckInTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CheckOutTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("VolunteerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AssignmentId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("VolunteerId");
-
-                    b.ToTable("VolunteerAssignments");
-                });
-
-            modelBuilder.Entity("FoodBridge.Server.Data.Models.VolunteerShift", b =>
-                {
-                    b.Property<int>("ShiftId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShiftId"));
-
-                    b.Property<int>("AssignedVolunteers")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("RequiredVolunteers")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ShiftId");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.ToTable("VolunteerShifts");
                 });
 
             modelBuilder.Entity("FoodBridge.Server.Data.Models.WasteRecord", b =>
@@ -830,13 +737,11 @@ namespace FoodBridge.Server.Migrations
                 {
                     b.HasOne("FoodBridge.Server.Data.Models.Product", null)
                         .WithMany("InventoryItems")
-                        .HasForeignKey("ProductId1");
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("FoodBridge.Server.Data.Models.DonationItem", "SourceDonationItem")
                         .WithMany("InventoryItems")
-                        .HasForeignKey("SourceDonationItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SourceDonationItemId");
 
                     b.Navigation("SourceDonationItem");
                 });
@@ -850,36 +755,6 @@ namespace FoodBridge.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("DonationItem");
-                });
-
-            modelBuilder.Entity("FoodBridge.Server.Data.Models.VolunteerAssignment", b =>
-                {
-                    b.HasOne("FoodBridge.Server.Data.Models.VolunteerShift", "Shift")
-                        .WithMany("Assignments")
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FoodBridge.Server.Data.ApplicationUser", "Volunteer")
-                        .WithMany()
-                        .HasForeignKey("VolunteerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("Volunteer");
-                });
-
-            modelBuilder.Entity("FoodBridge.Server.Data.Models.VolunteerShift", b =>
-                {
-                    b.HasOne("FoodBridge.Server.Data.ApplicationUser", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("FoodBridge.Server.Data.Models.WasteRecord", b =>
@@ -980,11 +855,6 @@ namespace FoodBridge.Server.Migrations
                     b.Navigation("DonationItems");
 
                     b.Navigation("InventoryItems");
-                });
-
-            modelBuilder.Entity("FoodBridge.Server.Data.Models.VolunteerShift", b =>
-                {
-                    b.Navigation("Assignments");
                 });
 #pragma warning restore 612, 618
         }

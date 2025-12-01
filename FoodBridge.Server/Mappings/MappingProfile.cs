@@ -33,8 +33,6 @@ namespace FoodBridge.Server.Mappings
 
             CreateDonationReceiptMappings();
 
-            CreateDonationDispositionMappings();
-
             CreateDonationAuditTrailMappings();
 
             CreateWasteRecordMappings();
@@ -133,8 +131,8 @@ namespace FoodBridge.Server.Mappings
             // Donation -> DonationDto
             CreateMap<Donation, DonationDto>()
                   .ForMember(dest => dest.DonorName, opt => opt.MapFrom(src => src.Donor.Name))
-                  .ForMember(dest => dest.ReceivedByName, opt => opt.Ignore()) // Will need UserManager to resolve
-                  .ForMember(dest => dest.InspectedByName, opt => opt.Ignore()); // Will need UserManager to resolve
+                  .ForMember(dest => dest.ReceivedByName, opt => opt.Ignore()) 
+                  .ForMember(dest => dest.InspectedByName, opt => opt.Ignore()); 
 
             // Donation -> DonationSummaryDto
             CreateMap<Donation, DonationSummaryDto>()
@@ -156,7 +154,6 @@ namespace FoodBridge.Server.Mappings
              .ForMember(dest => dest.Donation, opt => opt.Ignore())
              .ForMember(dest => dest.Product, opt => opt.Ignore())
              .ForMember(dest => dest.QualityInspection, opt => opt.Ignore())
-             .ForMember(dest => dest.Disposition, opt => opt.Ignore())
              .ForMember(dest => dest.WasteRecords, opt => opt.Ignore())
              .ForMember(dest => dest.InventoryItems, opt => opt.Ignore());
 
@@ -173,7 +170,6 @@ namespace FoodBridge.Server.Mappings
               .ForMember(dest => dest.Donation, opt => opt.Ignore())
               .ForMember(dest => dest.Product, opt => opt.Ignore())
               .ForMember(dest => dest.QualityInspection, opt => opt.Ignore())
-              .ForMember(dest => dest.Disposition, opt => opt.Ignore())
               .ForMember(dest => dest.WasteRecords, opt => opt.Ignore())
               .ForMember(dest => dest.InventoryItems, opt => opt.Ignore());
 
@@ -186,8 +182,7 @@ namespace FoodBridge.Server.Mappings
               .ForMember(dest => dest.Condition, opt => opt.MapFrom(src => src.StorageCondition))
               .ForMember(dest => dest.InspectionStatus, opt => opt.MapFrom(src =>
                        src.QualityInspection != null ? src.QualityInspection.Status : "Pending"))
-              .ForMember(dest => dest.QualityInspection, opt => opt.MapFrom(src => src.QualityInspection))
-              .ForMember(dest => dest.Disposition, opt => opt.MapFrom(src => src.Disposition));
+              .ForMember(dest => dest.QualityInspection, opt => opt.MapFrom(src => src.QualityInspection));
         }
 
         private void CreateProductMappings()
@@ -230,34 +225,25 @@ namespace FoodBridge.Server.Mappings
              .ForMember(dest => dest.BlockReason, opt => opt.Ignore())
              .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
              .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-             .ForMember(dest => dest.Product, opt => opt.Ignore())
              .ForMember(dest => dest.SourceDonationItem, opt => opt.Ignore());
 
             // UpdateInventoryItemDto -> InventoryItem
             CreateMap<UpdateInventoryItemDto, InventoryItem>()
              .ForMember(dest => dest.InventoryItemId, opt => opt.Ignore())
-             .ForMember(dest => dest.ProductId, opt => opt.Ignore())
              .ForMember(dest => dest.DateReceived, opt => opt.Ignore())
              .ForMember(dest => dest.SourceDonationItemId, opt => opt.Ignore())
              .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
              .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-             .ForMember(dest => dest.Product, opt => opt.Ignore())
              .ForMember(dest => dest.SourceDonationItem, opt => opt.Ignore());
 
             // InventoryItem -> InventoryItemDto
             CreateMap<InventoryItem, InventoryItemDto>()
-             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.Product.ProductCode))
-             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Product.Category))
              .ForMember(dest => dest.StorageLocationName, opt => opt.Ignore())
              .ForMember(dest => dest.DaysUntilExpiration, opt => opt.MapFrom(src =>
              src.ExpirationDate.HasValue ? (int?)(src.ExpirationDate.Value - DateTime.UtcNow).TotalDays : null));
 
             // InventoryItem -> InventoryItemSummaryDto
             CreateMap<InventoryItem, InventoryItemSummaryDto>()
-             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
-             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.Product.ProductCode))
-             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Product.Category))
              .ForMember(dest => dest.DaysUntilExpiration, opt => opt.MapFrom(src =>
                 src.ExpirationDate.HasValue ? (int?)(src.ExpirationDate.Value - DateTime.UtcNow).TotalDays : null))
              .ForMember(dest => dest.IsExpiringSoon, opt => opt.MapFrom(src =>
@@ -292,42 +278,25 @@ namespace FoodBridge.Server.Mappings
         {
             // CreateDonationReceiptDto -> DonationReceipt
             CreateMap<CreateDonationReceiptDto, DonationReceipt>()
-         .ForMember(dest => dest.ReceiptId, opt => opt.Ignore())
-             .ForMember(dest => dest.TotalItemsReceived, opt => opt.Ignore()) // Will be calculated
-             .ForMember(dest => dest.TotalItemsApproved, opt => opt.Ignore()) // Will be calculated
-           .ForMember(dest => dest.GeneratedAt, opt => opt.MapFrom(src => src.IssueDate))
+            .ForMember(dest => dest.ReceiptId, opt => opt.Ignore())
+            .ForMember(dest => dest.TotalItemsReceived, opt => opt.Ignore()) // Will be calculated
+            .ForMember(dest => dest.TotalItemsApproved, opt => opt.Ignore()) // Will be calculated
+            .ForMember(dest => dest.GeneratedAt, opt => opt.MapFrom(src => src.IssueDate))
             .ForMember(dest => dest.SentToDonor, opt => opt.MapFrom(src => false))
-        .ForMember(dest => dest.SentAt, opt => opt.Ignore())
-             .ForMember(dest => dest.PDFPath, opt => opt.Ignore())
-         .ForMember(dest => dest.Donation, opt => opt.Ignore());
+            .ForMember(dest => dest.SentAt, opt => opt.Ignore())
+            .ForMember(dest => dest.PDFPath, opt => opt.Ignore())
+            .ForMember(dest => dest.Donation, opt => opt.Ignore());
 
             // DonationReceipt -> DonationReceiptDto
             CreateMap<DonationReceipt, DonationReceiptDto>()
-          .ForMember(dest => dest.IssueDate, opt => opt.MapFrom(src => src.GeneratedAt))
-          .ForMember(dest => dest.TotalEstimatedValue, opt => opt.Ignore()) // Not in model
-        .ForMember(dest => dest.IsTaxDeductible, opt => opt.Ignore()) // Not in model
-             .ForMember(dest => dest.ReceiptNotes, opt => opt.Ignore()) // Not in model
-            .ForMember(dest => dest.IssuedByName, opt => opt.Ignore()) // Will need UserManager to resolve
-         .ForMember(dest => dest.DonorName, opt => opt.MapFrom(src => src.Donation.Donor.Name))
+            .ForMember(dest => dest.IssueDate, opt => opt.MapFrom(src => src.GeneratedAt))
+            .ForMember(dest => dest.IssuedByName, opt => opt.Ignore())
+            .ForMember(dest => dest.DonorName, opt => opt.MapFrom(src => src.Donation.Donor.Name))
             .ForMember(dest => dest.DonationDate, opt => opt.MapFrom(src => src.Donation.DonationDate))
-             .ForMember(dest => dest.TotalItems, opt => opt.MapFrom(src => src.TotalItemsReceived))
-              .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.GeneratedAt));
+            .ForMember(dest => dest.TotalItems, opt => opt.MapFrom(src => src.TotalItemsReceived))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.GeneratedAt));
         }
 
-        private void CreateDonationDispositionMappings()
-        {
-            // CreateDonationDispositionDto -> DonationDisposition
-            CreateMap<CreateDonationDispositionDto, DonationDisposition>()
-             .ForMember(dest => dest.DispositionId, opt => opt.Ignore())
-             .ForMember(dest => dest.ApprovedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-             .ForMember(dest => dest.DonationItem, opt => opt.Ignore());
-
-            // DonationDisposition -> DonationDispositionDto
-            CreateMap<DonationDisposition, DonationDispositionDto>()
-      .ForMember(dest => dest.ApprovedByName, opt => opt.Ignore()); // Will need UserManager to resolve
-        }
 
         private void CreateDonationAuditTrailMappings()
         {
@@ -337,7 +306,7 @@ namespace FoodBridge.Server.Mappings
              .ForMember(dest => dest.ActionDetails, opt => opt.MapFrom(src => src.Details))
        .ForMember(dest => dest.OldValue, opt => opt.Ignore()) // Not in model
    .ForMember(dest => dest.NewValue, opt => opt.Ignore()) // Not in model
-             .ForMember(dest => dest.PerformedByName, opt => opt.Ignore()); // Will need UserManager to resolve
+             .ForMember(dest => dest.PerformedByName, opt => opt.Ignore());
         }
 
         private void CreateWasteRecordMappings()
@@ -354,7 +323,7 @@ namespace FoodBridge.Server.Mappings
              .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
             .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.Product.ProductCode))
            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Product.Category))
-           .ForMember(dest => dest.DisposedByName, opt => opt.Ignore()); // Will need UserManager to resolve
+           .ForMember(dest => dest.DisposedByName, opt => opt.Ignore());
         }
     }
 }

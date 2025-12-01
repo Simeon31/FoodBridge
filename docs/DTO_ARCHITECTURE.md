@@ -2,8 +2,7 @@
 
 ## Overview
 
-This document outlines the Data Transfer Object (DTO) architecture implemented in the FoodBridge project. DTOs provide a clean separation between the domain model and the API contract, improving security, maintainability, and flexibility.
-
+This document outlines the Data Transfer Object (DTO) architecture implemented in the FoodBridge project. 
 ## ?? Directory Structure
 
 ```

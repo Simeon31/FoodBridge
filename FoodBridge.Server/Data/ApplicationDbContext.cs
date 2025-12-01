@@ -15,13 +15,14 @@ namespace FoodBridge.Server.Data
         public DbSet<Donation> Donations { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<DonationAuditTrail> DonationAuditTrails { get; set; }
-        public DbSet<DonationDisposition> DonationDispositions { get; set; }
         public DbSet<DonationItem> DonationItems { get; set; }
         public DbSet<DonationReceipt> DonationReceipts { get; set; }
         public DbSet<Donor> Donors { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<QualityInspection> QualityInspections { get; set; }
         public DbSet<WasteRecord> WasteRecords { get; set; }
+        public DbSet<VolunteerShift> VolunteerShifts { get; set; }
+        public DbSet<VolunteerAssignment> VolunteerAssignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -62,6 +63,29 @@ namespace FoodBridge.Server.Data
                 {
                     entity.ToTable("UserTokens");
                 });
+
+            // Configure VolunteerShift relationships to prevent cascade conflicts
+            builder.Entity<VolunteerShift>(entity =>
+   {
+       entity.HasOne(vs => vs.Creator)
+         .WithMany()
+           .HasForeignKey(vs => vs.CreatedBy)
+    .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+   });
+
+            // Configure VolunteerAssignment relationships to prevent cascade conflicts
+            builder.Entity<VolunteerAssignment>(entity =>
+              {
+                  entity.HasOne(va => va.Shift)
+      .WithMany(vs => vs.Assignments)
+      .HasForeignKey(va => va.ShiftId)
+     .OnDelete(DeleteBehavior.Cascade); // Cascade when shift is deleted
+
+                  entity.HasOne(va => va.Volunteer)
+           .WithMany()
+     .HasForeignKey(va => va.VolunteerId)
+    .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete
+              });
         }
     }
 }

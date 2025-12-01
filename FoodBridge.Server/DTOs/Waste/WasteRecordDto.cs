@@ -15,19 +15,19 @@ namespace FoodBridge.Server.DTOs.Waste
         [Required]
         public int Quantity { get; set; }
 
- [StringLength(50)]
+        [StringLength(50)]
         public string UnitType { get; set; }
 
         [Required]
-   [StringLength(100)]
+        [StringLength(100)]
         public string WasteReason { get; set; }
 
-    [StringLength(100)]
+        [StringLength(100)]
         public string DisposalMethod { get; set; }
 
         public DateTime? DisposedAt { get; set; }
 
-    public int? DisposedBy { get; set; }
+        public int? DisposedBy { get; set; }
     }
 
     /// <summary>
@@ -35,15 +35,15 @@ namespace FoodBridge.Server.DTOs.Waste
     /// </summary>
     public class UpdateWasteRecordDto
     {
- [StringLength(100)]
+        [StringLength(100)]
         public string WasteReason { get; set; }
 
         [StringLength(100)]
-      public string DisposalMethod { get; set; }
+        public string DisposalMethod { get; set; }
 
-      public DateTime? DisposedAt { get; set; }
+        public DateTime? DisposedAt { get; set; }
 
-     public int? DisposedBy { get; set; }
+        public int? DisposedBy { get; set; }
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace FoodBridge.Server.DTOs.Waste
     public class WasteRecordDto
     {
         public int WasteRecordId { get; set; }
-   public int? DonationItemId { get; set; }
+        public int? DonationItemId { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductCode { get; set; }
@@ -64,7 +64,7 @@ namespace FoodBridge.Server.DTOs.Waste
         public DateTime? DisposedAt { get; set; }
         public int? DisposedBy { get; set; }
         public string DisposedByName { get; set; }
-   public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 
     /// <summary>
@@ -75,22 +75,22 @@ namespace FoodBridge.Server.DTOs.Waste
         public int WasteRecordId { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }
-      public string UnitType { get; set; }
+        public string UnitType { get; set; }
         public string WasteReason { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
     /// <summary>
     /// DTO for waste statistics/dashboard
-  /// </summary>
+    /// </summary>
     public class WasteStatisticsDto
     {
-public int TotalWasteRecords { get; set; }
+        public int TotalWasteRecords { get; set; }
         public int TotalQuantityWasted { get; set; }
         public Dictionary<string, int> WasteByReason { get; set; } = new();
-   public Dictionary<string, int> WasteByCategory { get; set; } = new();
+        public Dictionary<string, int> WasteByCategory { get; set; } = new();
         public List<MonthlyWasteDto> MonthlyWaste { get; set; } = new();
-  }
+    }
 
     /// <summary>
     /// DTO for monthly waste data
@@ -101,6 +101,6 @@ public int TotalWasteRecords { get; set; }
         public int Month { get; set; }
         public string MonthName { get; set; }
         public int TotalQuantity { get; set; }
-   public int RecordCount { get; set; }
+        public int RecordCount { get; set; }
     }
 }

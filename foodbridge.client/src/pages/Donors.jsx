@@ -23,6 +23,8 @@ const DonorsPage = () => {
         email: '',
         phoneNumber: '',
         address: '',
+        city: '',
+        postalCode: '',
         donorType: ''
     });
 
@@ -30,14 +32,14 @@ const DonorsPage = () => {
         try {
             setLoading(true);
             setError(null);
-   
+        
             const response = await donorsAPI.getAll({ 
                 pageNumber, 
                 pageSize,
                 sortBy: 'Name',
-                sortDescending: false  // ? Added proper sorting
+                sortDescending: false
             });
-         
+      
             if (response.success) {
                 setDonors(response.data.items || []);
                 setTotalPages(response.data.totalPages || 1);
@@ -46,7 +48,7 @@ const DonorsPage = () => {
         } catch (err) {
             console.error('Fetch donors error:', err);
             setError(err.response?.data?.message || 'Failed to load donors');
-            setDonors([]);  // Set empty array on error
+            setDonors([]);
         } finally {
             setLoading(false);
         }
@@ -57,23 +59,25 @@ const DonorsPage = () => {
     }, [pageNumber]);
 
     const handleCreate = () => {
-        setFormData({ name: '', email: '', phoneNumber: '', address: '', donorType: '' });
+        setFormData({ name: '', email: '', phoneNumber: '', address: '', city: '', postalCode: '', donorType: '' });
         setModalMode('create');
         setShowModal(true);
     };
 
     const handleEdit = async (donor) => {
         const response = await donorsAPI.getById(donor.donorId);
-        if (response.success) {
-            setSelectedDonor(response.data);
-            setFormData({
-                name: response.data.name,
-                email: response.data.email || '',
-                phoneNumber: response.data.phoneNumber || '',
-                address: response.data.address || '',
-                donorType: response.data.donorType || ''
-            });
-            setModalMode('edit');
+      if (response.success) {
+ setSelectedDonor(response.data);
+         setFormData({
+        name: response.data.name,
+  email: response.data.email || '',
+    phoneNumber: response.data.phoneNumber || '',
+ address: response.data.address || '',
+      city: response.data.city || '',
+       postalCode: response.data.postalCode || '',
+       donorType: response.data.donorType || ''
+         });
+    setModalMode('edit');
             setShowModal(true);
         }
     };
@@ -144,6 +148,10 @@ const DonorsPage = () => {
                             <FormInput label="Email" name="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                             <FormInput label="Phone" name="phoneNumber" value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} />
                             <FormInput label="Address" name="address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormInput label="City" name="city" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} placeholder="Enter city" />
+                                <FormInput label="Postal Code" name="postalCode" value={formData.postalCode} onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })} placeholder="Enter postal code" />
+                            </div>
                             <FormSelect
                                 label="Donor Type"
                                 name="donorType"
@@ -154,6 +162,7 @@ const DonorsPage = () => {
                                     { value: 'Business', label: 'Business' },
                                     { value: 'Organization', label: 'Organization' }
                                 ]}
+                                required
                             />
                         </div>
                         <div className="flex justify-end gap-3 mt-6">
