@@ -1,0 +1,6 @@
+@FoodBridge.Server_HostAddress = http://localhost:5231
+
+GET {{FoodBridge.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
