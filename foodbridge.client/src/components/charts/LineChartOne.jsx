@@ -1,12 +1,45 @@
 import Chart from 'react-apexcharts';
 import { useTheme } from '../../contexts/ThemeContext';
+import PropTypes from 'prop-types';
+import { useMemo } from 'react';
 
-const LineChartOne = () => {
+const LineChartOne = ({ data = [] }) => {
   const { darkMode } = useTheme();
+
+  // Process data for the chart
+  const chartData = useMemo(() => {
+    if (!data || data.length === 0) {
+      // Default data if none provided
+      return {
+        categories: [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ],
+        donationValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        itemValues: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      };
+    }
+
+    return {
+      categories: data.map((item) => item.monthName),
+      donationValues: data.map((item) => item.donationCount),
+      itemValues: data.map((item) => item.itemCount),
+    };
+  }, [data]);
 
   const options = {
     legend: {
-      show: false,
+      show: true,
       position: 'top',
       horizontalAlign: 'left',
       labels: {
@@ -62,26 +95,15 @@ const LineChartOne = () => {
     tooltip: {
       theme: darkMode ? 'dark' : 'light',
       enabled: true,
+      shared: true,
+      intersect: false,
       x: {
-        format: 'dd MMM yyyy',
+        show: true,
       },
     },
     xaxis: {
       type: 'category',
-      categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
-      ],
+      categories: chartData.categories,
       axisBorder: {
         show: false,
       },
@@ -93,9 +115,9 @@ const LineChartOne = () => {
           colors: darkMode ? '#9CA3AF' : '#64748b',
           fontSize: '12px',
         },
-      },
-      tooltip: {
-        enabled: false,
+        rotate: -45,
+        rotateAlways: false,
+        hideOverlappingLabels: true,
       },
     },
     yaxis: {
@@ -112,26 +134,53 @@ const LineChartOne = () => {
         },
       },
     },
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          chart: {
+            height: 250,
+          },
+          xaxis: {
+            labels: {
+              style: {
+                fontSize: '10px',
+              },
+            },
+          },
+        },
+      },
+    ],
   };
 
   const series = [
     {
       name: 'Donations',
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+      data: chartData.donationValues,
     },
     {
-      name: 'Requests',
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+      name: 'Items Donated',
+      data: chartData.itemValues,
     },
   ];
 
   return (
-    <div className="max-w-full overflow-x-auto custom-scrollbar">
-      <div id="chartEight" className="min-w-[1000px]">
+    <div className="w-full overflow-x-auto custom-scrollbar">
+      <div id="chartEight" className="min-w-full sm:min-w-0">
         <Chart options={options} series={series} type="area" height={310} />
       </div>
     </div>
   );
+};
+
+LineChartOne.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      monthName: PropTypes.string,
+      donationCount: PropTypes.number,
+      itemCount: PropTypes.number,
+    })
+  ),
 };
 
 export default LineChartOne;

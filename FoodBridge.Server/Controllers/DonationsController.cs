@@ -212,5 +212,24 @@ try
 return StatusCode(500, ApiResponse.ErrorResponse("An error occurred while retrieving receipt"));
   }
         }
+
+      /// <summary>
+        /// Get available donation items
+        /// </summary>
+        [HttpGet("available-items")]
+        [ProducesResponseType(typeof(ApiResponse<List<AvailableDonationItemDto>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 500)]
+        public async Task<IActionResult> GetAvailableDonationItems()
+        {
+            try
+            {
+                var items = await _donationService.GetAvailableDonationItemsAsync();
+                return Ok(ApiResponse<List<AvailableDonationItemDto>>.SuccessResponse(items, "Available donation items retrieved successfully."));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse.ErrorResponse("An error occurred while retrieving available donation items.", new List<string> { ex.Message }));
+            }
+        }
     }
 }

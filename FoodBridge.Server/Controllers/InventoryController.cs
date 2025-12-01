@@ -76,7 +76,8 @@ catch (Exception ex)
      }
 
         [HttpPost]
-      [ProducesResponseType(typeof(ApiResponse<InventoryItemDto>), StatusCodes.Status201Created)]
+        [Authorize(Roles = "Admin,Staff")]
+        [ProducesResponseType(typeof(ApiResponse<InventoryItemDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
    public async Task<IActionResult> Create([FromBody] CreateInventoryItemDto dto)
         {
@@ -100,6 +101,7 @@ catch (Exception ex)
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
         [ProducesResponseType(typeof(ApiResponse<InventoryItemDto>), StatusCodes.Status200OK)]
   [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateInventoryItemDto dto)
@@ -127,10 +129,11 @@ catch (Exception ex)
     }
 
         [HttpPost("{id}/adjust-quantity")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin,Staff")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AdjustQuantity(int id, [FromBody] InventoryAdjustmentDto dto)
-   {
+  public async Task<IActionResult> AdjustQuantity(int id, [FromBody] InventoryAdjustmentDto dto)
+{
       try
        {
  var result = await _inventoryService.AdjustQuantityAsync(id, dto.QuantityChange, dto.Reason);
@@ -148,11 +151,12 @@ catch (Exception ex)
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Staff")]
    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-      [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
-        {
-            try
+  {
+  try
       {
      var result = await _inventoryService.DeleteAsync(id);
 
@@ -167,5 +171,5 @@ if (!result)
           return StatusCode(500, ApiResponse.ErrorResponse("An error occurred while deleting the inventory item"));
       }
         }
- }
+    }
 }

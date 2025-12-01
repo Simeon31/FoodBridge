@@ -99,6 +99,15 @@ export const donationsAPI = {
  getDonationItems: async (id) => get(ep(`donations/${id}/items`)),
  getQualityInspection: async (id) => get(ep(`donations/${id}/inspection`)),
  getReceipt: async (id) => get(ep(`donations/${id}/receipt`)),
+ getAvailableItems: async () => {
+        try {
+            const response = await api.get('/donations/available-items');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching available donation items:', error);
+            throw error;
+        }
+    },
 };
 
 export const inventoryAPI = {

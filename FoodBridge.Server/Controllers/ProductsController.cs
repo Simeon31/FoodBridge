@@ -76,8 +76,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
-[ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status201Created)]
-      [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
  {
     try
@@ -100,8 +101,9 @@ public class ProductsController : ControllerBase
      }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
   [ProducesResponseType(typeof(ApiResponse<ProductDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+      [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
   public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto)
       {
    try
@@ -127,11 +129,12 @@ public class ProductsController : ControllerBase
       }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
 [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
   public async Task<IActionResult> Delete(int id)
-   {
-     try
+        {
+       try
             {
   var result = await _productService.DeleteAsync(id);
 

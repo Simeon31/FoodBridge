@@ -11,7 +11,7 @@ namespace FoodBridge.Server.Services
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             // Create Roles
-            string[] roles = { "Admin", "User", "Volunteer", "Donor" };
+            string[] roles = { "Admin", "User", "Volunteer", "Donor", "Staff", "Coordinator" };
 
             foreach (var role in roles)
             {
@@ -66,6 +66,78 @@ namespace FoodBridge.Server.Services
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(testUser, "User");
+                }
+            }
+
+            // Create Default Staff User
+            var staffEmail = "staff@foodbridge.com";
+            var staffUser = await userManager.FindByEmailAsync(staffEmail);
+
+            if (staffUser == null)
+            {
+                staffUser = new ApplicationUser
+                {
+                    UserName = staffEmail,
+                    Email = staffEmail,
+                    FirstName = "Staff",
+                    LastName = "Member",
+                    EmailConfirmed = true,
+                    IsActive = true
+                };
+
+                var result = await userManager.CreateAsync(staffUser, "Staff@123");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(staffUser, "Staff");
+                }
+            }
+
+            // Create Default Coordinator User
+            var coordinatorEmail = "coordinator@foodbridge.com";
+            var coordinatorUser = await userManager.FindByEmailAsync(coordinatorEmail);
+
+            if (coordinatorUser == null)
+            {
+                coordinatorUser = new ApplicationUser
+                {
+                    UserName = coordinatorEmail,
+                    Email = coordinatorEmail,
+                    FirstName = "Coordinator",
+                    LastName = "User",
+                    EmailConfirmed = true,
+                    IsActive = true
+                };
+
+                var result = await userManager.CreateAsync(coordinatorUser, "Coordinator@123");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(coordinatorUser, "Coordinator");
+                }
+            }
+
+            // Create Default Volunteer User
+            var volunteerEmail = "volunteer@foodbridge.com";
+            var volunteerUser = await userManager.FindByEmailAsync(volunteerEmail);
+
+            if (volunteerUser == null)
+            {
+                volunteerUser = new ApplicationUser
+                {
+                    UserName = volunteerEmail,
+                    Email = volunteerEmail,
+                    FirstName = "Volunteer",
+                    LastName = "User",
+                    EmailConfirmed = true,
+                    IsActive = true
+                };
+
+                var result = await userManager.CreateAsync(volunteerUser, "Volunteer@123");
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(volunteerUser, "Volunteer");
                 }
             }
         }

@@ -87,6 +87,9 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IDonorService, DonorService>();
 builder.Services.AddScoped<IWasteService, WasteService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IVolunteerShiftService, VolunteerShiftService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 builder.Services.AddControllers();

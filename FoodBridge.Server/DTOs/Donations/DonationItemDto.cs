@@ -60,6 +60,5 @@ namespace FoodBridge.Server.DTOs.Donations
         public string InspectionStatus { get; set; }
         public DateTime CreatedAt { get; set; }
       public QualityInspectionDto QualityInspection { get; set; }
-        public DonationDispositionDto Disposition { get; set; }
     }
 }
