@@ -1,13 +1,13 @@
 # FoodBridge Authentication Troubleshooting Guide
 
-## ?? Changes Made to Fix Login/Registration Issues
+## Changes Made to Fix Login/Registration Issues
 
 ### 1. **Frontend Configuration**
-- ? Updated Vite proxy to use IPv4 address (`127.0.0.1:7066`) instead of `localhost`
-- ? Enhanced AuthContext with comprehensive logging and error handling
-- ? Improved authService with request/response interceptors and detailed logging
-- ? Added authentication state management improvements
-- ? Enhanced Login and Register pages with better error handling
+- Updated Vite proxy to use IPv4 address (`127.0.0.1:7066`) instead of `localhost`
+- Enhanced AuthContext with comprehensive logging and error handling
+- Improved authService with request/response interceptors and detailed logging
+- Added authentication state management improvements
+- Enhanced Login and Register pages with better error handling
 
 ### 2. **Key Issues Fixed**
 
@@ -30,7 +30,7 @@
   - Added console logging for debugging
   - Improved error propagation from services to UI
 
-## ?? How to Test
+## How to Test
 
 ### Step 1: Start the Backend
 ```bash
@@ -55,7 +55,7 @@ npm run dev
 ```
   VITE v5.x.x  ready in xxx ms
 
-  ?  Local:   http://localhost:5173/
+  Local:   http://localhost:5173/
 ```
 
 ### Step 3: Test Login with Seeded Data
@@ -80,7 +80,7 @@ You should see detailed logs like:
 [AuthContext] Login successful, user: { id: '...', email: '...', ... }
 ```
 
-## ?? Debugging Steps
+## Debugging Steps
 
 ### 1. Check if Backend is Running
 ```bash
@@ -88,7 +88,7 @@ You should see detailed logs like:
 netstat -ano | findstr :7066
 
 # Should show something like:
-# TCP    0.0.0.0:7066           0.0.0.0:0   LISTENING     12345
+# TCP    0.0.0.0:7066    0.0.0.0:0   LISTENING     12345 (Your port)
 ```
 
 ### 2. Check Database Connection
@@ -130,7 +130,7 @@ curl -X POST https://localhost:7066/api/auth/login \
    - `authToken`: JWT token string
    - `user`: JSON object with user info
 
-## ?? Common Issues and Solutions
+## Common Issues and Solutions
 
 ### Issue 1: "Cannot connect to server"
 **Symptoms**: ECONNREFUSED, ERR_CONNECTION_REFUSED
@@ -170,7 +170,7 @@ curl -X POST https://localhost:7066/api/auth/login \
 - Check firstName and lastName are provided
 - Review backend validation logs
 
-## ?? Checklist for Fresh Setup
+## Checklist for Fresh Setup
 
 - [ ] SQL Server is running
 - [ ] Database "FoodBridge" exists
@@ -181,19 +181,19 @@ curl -X POST https://localhost:7066/api/auth/login \
 - [ ] Vite proxy is configured for `127.0.0.1:7066`
 - [ ] Browser has no cached auth data (clear localStorage if needed)
 
-## ?? Success Indicators
+## Success Indicators
 
-? Backend starts without errors
-? Frontend connects successfully (no ECONNREFUSED)
-? Login page displays without errors
-? Can login with admin@foodbridge.com / Admin@123
-? Dashboard displays user information
-? Logout works and redirects to login
-? Can register new users
-? Browser console shows detailed logs
-? Network tab shows 200 OK responses
+Backend starts without errors
+Frontend connects successfully (no ECONNREFUSED)
+Login page displays without errors
+Can login with admin@foodbridge.com / Admin@123
+Dashboard displays user information
+Logout works and redirects to login
+Can register new users
+Browser console shows detailed logs
+Network tab shows 200 OK responses
 
-## ?? Additional Help
+## Additional Help
 
 If issues persist after following this guide:
 
@@ -203,7 +203,7 @@ If issues persist after following this guide:
 4. **Check database** - Verify user exists with correct password hash
 5. **Review error messages** - Enhanced logging now provides detailed error information
 
-## ?? Test Accounts (from DatabaseSeeder)
+## Test Accounts (from DatabaseSeeder)
 
 | Email | Password | Role |
 |-------|----------|------|

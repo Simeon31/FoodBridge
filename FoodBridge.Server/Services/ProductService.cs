@@ -5,7 +5,9 @@ using FoodBridge.Server.DTOs.Common;
 using FoodBridge.Server.DTOs.Products;
 using FoodBridge.Server.Helpers;
 using FoodBridge.Server.Mappings;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace FoodBridge.Server.Services
 {
@@ -21,168 +23,166 @@ namespace FoodBridge.Server.Services
 
     public class ProductService : IProductService
     {
-      private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
- private readonly ILogger<ProductService> _logger;
+        private readonly ILogger<ProductService> _logger;
 
         public ProductService(
-  ApplicationDbContext context,
- IMapper mapper,
+            ApplicationDbContext context,
+                              IMapper mapper,
             ILogger<ProductService> logger)
-{
-         _context = context;
+        {
+            _context = context;
             _mapper = mapper;
-    _logger = logger;
-      }
+            _logger = logger;
+        }
 
         public async Task<PagedResultDto<ProductDto>> GetAllAsync(ProductFilterDto filter)
         {
-   try
-{
-    var query = _context.Products.AsQueryable();
+            try
+            {
+                var query = _context.Products.AsQueryable();
 
-    // Apply filters
-  query = ApplyFilters(query, filter);
+                query = ApplyFilters(query, filter);
 
-    // Apply search
-    if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
-    {
-        query = query.ApplySearch(filter.SearchTerm,
-            p => p.ProductName,
-            p => p.Category,
-            p => p.ProductCode);
-    }
+                // Apply search
+                if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
+                {
+                    query = query.ApplySearch(filter.SearchTerm,
+                        p => p.ProductName,
+                        p => p.Category,
+                        p => p.ProductCode);
+                }
 
-    // Apply sorting
-    query = query.ApplySort(filter.SortBy, filter.SortDescending);
+                query = query.ApplySort(filter.SortBy, filter.SortDescending);
 
-    // Get paged results
-    var pagedResult = await query.ToPagedResultAsync(filter.PageNumber, filter.PageSize);
+                // Get paged results
+                var pagedResult = await query.ToPagedResultAsync(filter.PageNumber, filter.PageSize);
 
-       // Map to DTOs
-      return new PagedResultDto<ProductDto>
-          {
-            Items = pagedResult.Items.Select(p => p.ToDto(_mapper)).ToList(),
-   TotalCount = pagedResult.TotalCount,
-          PageNumber = pagedResult.PageNumber,
-       PageSize = pagedResult.PageSize
+                // Map to DTOs
+                return new PagedResultDto<ProductDto>
+                {
+                    Items = pagedResult.Items.Select(p => p.ToDto(_mapper)).ToList(),
+                    TotalCount = pagedResult.TotalCount,
+                    PageNumber = pagedResult.PageNumber,
+                    PageSize = pagedResult.PageSize
                 };
-        }
-catch (Exception ex)
-   {
-     _logger.LogError(ex, "Error retrieving products");
-  throw;
             }
-     }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving products");
+                throw;
+            }
+        }
 
         public async Task<ProductDto?> GetByIdAsync(int id)
-      {
-      try
+        {
+            try
             {
-          var product = await _context.Products
-   .FirstOrDefaultAsync(p => p.ProductId == id);
+                var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.ProductId == id);
 
-     return product?.ToDto(_mapper);
+                return product?.ToDto(_mapper);
             }
-        catch (Exception ex)
-       {
-       _logger.LogError(ex, "Error retrieving product {ProductId}", id);
-           throw;
-          }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving product {ProductId}", id);
+                throw;
+            }
         }
 
-   public async Task<ProductDto> CreateAsync(CreateProductDto dto)
+        public async Task<ProductDto> CreateAsync(CreateProductDto dto)
         {
-  try
-      {
-         var product = dto.ToEntity(_mapper);
-  product.CreatedAt = DateTime.UtcNow;
+            try
+            {
+                var product = dto.ToEntity(_mapper);
+                product.CreatedAt = DateTime.UtcNow;
 
-              _context.Products.Add(product);
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
-      return product.ToDto(_mapper);
- }
+                return product.ToDto(_mapper);
+            }
             catch (Exception ex)
-     {
-     _logger.LogError(ex, "Error creating product");
-     throw;
- }
+            {
+                _logger.LogError(ex, "Error creating product");
+                throw;
+            }
         }
 
-    public async Task<ProductDto?> UpdateAsync(int id, UpdateProductDto dto)
+        public async Task<ProductDto?> UpdateAsync(int id, UpdateProductDto dto)
         {
-       try
-  {
-        var product = await _context.Products
-             .FirstOrDefaultAsync(p => p.ProductId == id);
+            try
+            {
+                var product = await _context.Products
+                     .FirstOrDefaultAsync(p => p.ProductId == id);
 
-     if (product == null)
-      return null;
+                if (product == null)
+                    return null;
 
-            product.UpdateFromDto(dto, _mapper);
+                product.UpdateFromDto(dto, _mapper);
 
-       await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-      return product.ToDto(_mapper);
+                return product.ToDto(_mapper);
             }
-    catch (Exception ex)
-    {
-         _logger.LogError(ex, "Error updating product {ProductId}", id);
-      throw;
-  }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating product {ProductId}", id);
+                throw;
+            }
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-          var product = await _context.Products
-          .FirstOrDefaultAsync(p => p.ProductId == id);
+                var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.ProductId == id);
 
-      if (product == null)
- return false;
+                if (product == null)
+                    return false;
 
-           // Soft delete
-           product.IsActive = false;
+                // Soft delete
+                product.IsActive = false;
 
-      await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 return true;
-      }
+            }
             catch (Exception ex)
-        {
-      _logger.LogError(ex, "Error deleting product {ProductId}", id);
-   throw;
+            {
+                _logger.LogError(ex, "Error deleting product {ProductId}", id);
+                throw;
             }
         }
 
         public async Task<List<ProductDto>> GetActiveProductsAsync()
         {
             var products = await _context.Products
-      .Where(p => p.IsActive)
-    .OrderBy(p => p.ProductName)
-                .ToListAsync();
+            .Where(p => p.IsActive)
+            .OrderBy(p => p.ProductName)
+            .ToListAsync();
 
-    return products.Select(p => p.ToDto(_mapper)).ToList();
+            return products.Select(p => p.ToDto(_mapper)).ToList();
         }
 
-   #region Private Helper Methods
+        #region Private Helper Methods
 
         private IQueryable<Product> ApplyFilters(IQueryable<Product> query, ProductFilterDto filter)
         {
-if (!string.IsNullOrWhiteSpace(filter.Category))
-        query = query.Where(p => p.Category == filter.Category);
+            if (!string.IsNullOrWhiteSpace(filter.Category))
+                query = query.Where(p => p.Category == filter.Category);
 
             if (filter.IsPerishable.HasValue)
-           query = query.Where(p => p.IsPerishable == filter.IsPerishable.Value);
+                query = query.Where(p => p.IsPerishable == filter.IsPerishable.Value);
 
             if (filter.IsActive.HasValue)
-             query = query.Where(p => p.IsActive == filter.IsActive.Value);
+                query = query.Where(p => p.IsActive == filter.IsActive.Value);
 
             return query;
         }
 
-    #endregion
+        #endregion
     }
 }

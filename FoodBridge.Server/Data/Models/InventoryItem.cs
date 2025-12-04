@@ -9,10 +9,6 @@ namespace FoodBridge.Server.Data.Models
         [Key]
         public int InventoryItemId { get; set; }
 
-        /// <summary>
-        /// Required: Every inventory item must come from a donation
-        /// Product information is accessed through SourceDonationItem.Product
-        /// </summary>
         [Required]
         public int SourceDonationItemId { get; set; }
 
@@ -36,16 +32,11 @@ namespace FoodBridge.Server.Data.Models
         [ForeignKey(nameof(SourceDonationItemId))]
         public DonationItem SourceDonationItem { get; set; }
 
-        /// <summary>
-        /// Product is accessed via: SourceDonationItem.Product
-        /// No direct ProductId foreign key to enforce normalization
-        /// </summary>
         [NotMapped]
         public Product Product => SourceDonationItem?.Product;
 
         [NotMapped]
         public int ProductId => SourceDonationItem?.ProductId ?? 0;
 
-        // Note: StorageLocation navigation will be added when StorageLocation entity is created
     }
 }

@@ -1,27 +1,27 @@
 ﻿# FoodBridge Quick Start Guide
 
-## 🚀 Getting Started in 3 Steps
+## Getting Started in 3 Steps
 
 ### Step 1: Start the Backend
 ```bash
 cd FoodBridge.Server
 dotnet run
 ```
-✅ Backend running at `https://localhost:7119`
+Backend running at `https://localhost:7119`
 
 ### Step 2: Start the Frontend
 ```bash
 cd foodbridge.client
 npm run dev
 ```
-✅ Frontend running at `http://localhost:5173`
+Frontend running at `http://localhost:5173`
 
 ### Step 3: Login or Register
 Open `http://localhost:5173` in your browser.
 
 ---
 
-## 🔐 Test Accounts (Development Only)
+## Test Accounts (Development Only)
 
 The following test accounts are automatically created in development mode:
 
@@ -37,30 +37,7 @@ The following test accounts are automatically created in development mode:
 
 ---
 
-## 📋 What's Included
-
-### ✅ Backend Features
-- Microsoft Identity authentication
-- JWT token-based authorization
-- SQL Server database with EF Core
-- RESTful API endpoints
-- Role-based access control
-- Secure password hashing
-- User profile management
-
-### ✅ Frontend Features
-- React 19 with Vite
-- React Router for navigation
-- Protected routes
-- Authentication context
-- Login & Registration pages
-- User dashboard
-- Axios API integration
-- Professional UI/UX
-
----
-
-## 🛠️ Available Routes
+## Available Routes
 
 - `/login` - User login
 - `/register` - New user registration
@@ -68,7 +45,7 @@ The following test accounts are automatically created in development mode:
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
@@ -80,7 +57,7 @@ The following test accounts are automatically created in development mode:
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Database Connection
 Edit `FoodBridge.Server/appsettings.json`:
@@ -105,7 +82,7 @@ Edit `FoodBridge.Server/appsettings.json`:
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 For detailed information, see:
 - **AUTHENTICATION_README.md** - Complete authentication documentation
@@ -113,7 +90,7 @@ For detailed information, see:
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Backend won't start
 - Check if SQL Server is running
@@ -135,7 +112,7 @@ For detailed information, see:
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 FoodBridge/
@@ -158,17 +135,7 @@ FoodBridge/
 
 ---
 
-## 🎯 Next Steps
-
-1. **Customize User Model** - Add more fields to ApplicationUser.cs
-2. **Add Features** - Implement inventory, volunteers, analytics
-3. **Configure Email** - Set up email confirmation and password reset
-4. **Add Roles UI** - Create admin interface for role management
-5. **Deploy** - Prepare for production deployment
-
----
-
-## 📞 Support
+## Support
 
 For issues or questions:
 1. Check AUTHENTICATION_README.md

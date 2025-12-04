@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-# FoodBridge
-=======
-# ?? FoodBridge - Food Donation Management Platform
-=======
 # FoodBridge - Food Donation Management Platform
->>>>>>> 7896b8e (Fix header formatting in README.md)
 
 A modern, full-stack web application for managing food donations, connecting donors with organizations in need.
 
@@ -14,17 +7,17 @@ A modern, full-stack web application for managing food donations, connecting don
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC?logo=tailwind-css)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-## ? Features
+## Features
 
-- ?? **Secure Authentication** - JWT-based authentication system
-- ?? **Dashboard Analytics** - Real-time statistics and metrics
-- ?? **Modern UI** - Tailwind CSS admin dashboard with responsive design
-- ?? **Mobile-First** - Fully responsive across all devices
-- ?? **Fast Performance** - Optimized builds with Vite
-- ?? **Dark Mode Ready** - Theme support built-in
-- ? **Accessible** - WCAG compliant design patterns
+- **Secure Authentication** - JWT-based authentication system
+- **Dashboard Analytics** - Dynamic statistics and metrics
+- **Modern UI** - Tailwind CSS admin dashboard with responsive design
+- **Mobile-First** - Partially responsive across all devices
+- **Fast Performance** - Optimized builds with Vite
+- **Dark Mode Ready** - Black theme support 
+- **Accessible** - WCAG compliant design patterns
 
-## ?? Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 20.16+ 
@@ -62,15 +55,7 @@ A modern, full-stack web application for managing food donations, connecting don
 - **Email:** `admin@foodbridge.com`
 - **Password:** `Admin@123`
 
-## ?? Documentation
-
-- **[Quick Start Guide](QUICKSTART.md)** - Get up and running in minutes
-- **[Implementation Summary](IMPLEMENTATION_SUMMARY.md)** - Technical details and architecture
-- **[Tailwind Integration](TAILWIND_DASHBOARD_INTEGRATION.md)** - UI framework documentation
-- **[Visual Guide](VISUAL_GUIDE.md)** - Design system and UI components
-- **[Login Troubleshooting](LOGIN_500_ERROR_FIXED.md)** - Common authentication issues
-
-## ??? Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React 19** - UI library
@@ -85,38 +70,38 @@ A modern, full-stack web application for managing food donations, connecting don
 - **SQL Server** - Database
 - **JWT** - Authentication
 
-## ?? Project Structure
+## Project Structure
 
 ```
 FoodBridge/
-??? FoodBridge.Server/  # .NET 8 Backend
-?   ??? Controllers/  # API endpoints
-?   ??? DTOs/      # Data transfer objects
-?   ??? Models/   # Entity models
-?   ??? Services/ # Business logic
-?   ??? Data/        # Database context
-?
-??? foodbridge.client/          # React Frontend
-    ??? src/
-    ?   ??? layout/   # Layout components
-    ?   ?   ??? AppLayout.jsx
-    ?   ?   ??? AppHeader.jsx
-    ?   ?   ??? AppSidebar.jsx
-    ?   ?   ??? Backdrop.jsx
-    ?   ??? pages/              # Page components
-    ?   ?   ??? Login.jsx
-    ?   ?   ??? Dashboard.jsx
-    ?   ?   ??? Register.jsx
- ? ??? contexts/           # React contexts
-  ?   ?   ??? AuthContext.jsx
-    ?   ?   ??? SidebarContext.jsx
-    ?   ??? components/   # Reusable components
-    ?   ??? services/           # API services
-    ??? tailwind.config.js      # Tailwind configuration
-    ??? vite.config.js          # Vite configuration
+  ├── FoodBridge.Server/      # .NET 8 Backend
+  │   ├── Controllers/        # API endpoints
+  │   ├── DTOs/               # Data transfer objects
+  │   ├── Models/             # Entity models
+  │   ├── Services/           # Business logic
+  │   └── Data/               # Database context
+  │
+  └── foodbridge.client/      # React Frontend
+      ├── src/
+      │   ├── layout/         # Layout components
+      │   │   ├── AppLayout.jsx
+      │   │   ├── AppHeader.jsx
+      │   │   ├── AppSidebar.jsx
+      │   │   └── Backdrop.jsx
+      │   ├── pages/          # Page components
+      │   │   ├── Login.jsx
+      │   │   ├── Dashboard.jsx
+      │   │   └── Register.jsx
+      │   ├── contexts/       # React contexts
+      │   │   ├── AuthContext.jsx
+      │   │   └── SidebarContext.jsx
+      │   ├── components/     # Reusable components
+      │   └── services/       # API services
+      ├── tailwind.config.js  # Tailwind configuration
+      └── vite.config.js      # Vite configuration
 ```
 
-## ?? Screenshots
+## Screenshots
 
 ### Login Page
 Modern authentication interface with gradient background and branded design.
@@ -127,7 +112,7 @@ Comprehensive overview with statistics cards and recent activity feed.
 ### Responsive Design
 Fully responsive layout that works seamlessly on mobile, tablet, and desktop.
 
-## ?? Development
+## Development
 
 ### Frontend Development
 ```bash
@@ -148,7 +133,7 @@ dotnet ef database update   # Apply migrations
 dotnet test      # Run tests
 ```
 
-## ?? Available Scripts
+## Available Scripts
 
 ### Frontend
 | Script | Description |
@@ -167,7 +152,7 @@ dotnet test      # Run tests
 | `dotnet ef migrations add [Name]` | Create new migration |
 | `dotnet ef database update` | Apply pending migrations |
 
-## ?? API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - User login
@@ -188,7 +173,7 @@ dotnet test      # Run tests
 
 *(More endpoints to be documented)*
 
-## ?? Security
+## Security
 
 - JWT-based authentication
 - HTTPS enforcement
@@ -198,7 +183,7 @@ dotnet test      # Run tests
 - XSS protection (React escaping)
 - Input validation
 
-## ?? Testing
+## Testing
 
 ```bash
 # Backend unit tests
@@ -210,7 +195,7 @@ cd foodbridge.client
 npm test
 ```
 
-## ?? Performance
+## Performance
 
 - **Bundle Size:**
   - CSS: 50KB (9.4KB gzipped)
@@ -218,34 +203,34 @@ npm test
 - **Build Time:** ~2 seconds
 - **Load Time:** <500ms (development)
 
-## ?? Contributing
+## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/FeatureBranch`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+4. Push to the branch (`git push origin feature/FeatureBranch`)
 5. Open a Pull Request
 
-## ?? License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## ?? Author
+## Author
 
 - Simeon Markov
 
-## ?? Acknowledgments
+## Acknowledgments
 
 - [Tailwind CSS](https://tailwindcss.com/) - For the amazing CSS framework
 - [Free React Tailwind Admin Dashboard](https://github.com/TailAdmin/free-react-tailwind-admin-dashboard) - For the admin template inspiration
 - [React](https://react.dev/) - For the powerful UI library
 - [.NET](https://dotnet.microsoft.com/) - For the robust backend framework
 
-## ?? Support
+## Support
 
 For support, email me or open an issue in the repository.
 
-## ?? Known Issues
+## Known Issues
 
 - Dark mode toggle not yet implemented (classes ready)
 - Search functionality is placeholder
@@ -257,5 +242,4 @@ For support, email me or open an issue in the repository.
 
 ** For fighting food waste and hunger**
 
-[? Back to top](#-foodbridge---food-donation-management-platform)
->>>>>>> 2ea77a7 (Add project files.)
+[Back to top](#-foodbridge---food-donation-management-platform)

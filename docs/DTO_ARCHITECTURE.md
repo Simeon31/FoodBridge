@@ -1,30 +1,28 @@
-# ?? FoodBridge DTO Architecture Guide
+# FoodBridge DTO Architecture Guide
 
 ## Overview
 
-This document outlines the Data Transfer Object (DTO) architecture implemented in the FoodBridge project. 
-## ?? Directory Structure
+This document outlines the Data Transfer Object (DTO) architecture
+## Directory Structure
 
 ```
 FoodBridge.Server/
-??? DTOs/
-?   ??? Auth/
-?   ?   ??? RegisterDto.cs
-?   ?   ??? LoginDto.cs
-?   ?   ??? AuthResponseDto.cs
-?   ?   ??? UserDto.cs
-?   ?   ??? ChangePasswordDto.cs
-? ?   ??? UpdateProfileDto.cs
-?   ??? Common/
-?    ??? ApiResponse.cs
-?    ??? PaginationDto.cs
-??? Mappings/
-?   ??? MappingExtensions.cs
-??? Models/ (Deprecated - use DTOs instead)
-    ??? AuthenticationModels.cs
-```
+    DTOs/
+        Auth/
+            RegisterDto.cs
+            LoginDto.cs
+            AuthResponseDto.cs
+            UserDto.cs
+            ChangePasswordDto.cs
+            UpdateProfileDto.cs
+        Common/
+            ApiResponse.cs
+            PaginationDto.cs
+    Mappings/
+        MappingExtensions.cs
+    ```
 
-## ?? DTO Categories
+## DTO Categories
 
 ### 1. **Authentication DTOs** (`DTOs/Auth/`)
 
@@ -209,7 +207,7 @@ public class PaginationParams
 }
 ```
 
-## ?? Mapping Strategy
+## Mapping Strategy
 
 ### Using Extension Methods (`Mappings/MappingExtensions.cs`)
 
@@ -225,10 +223,10 @@ user.UpdateFromDto(updateProfileDto);
 ```
 
 ### Benefits of Extension Methods:
-- ? Cleaner code
-- ? Centralized mapping logic
-- ? Easy to test
-- ? No external dependencies needed
+- Cleaner code
+- Centralized mapping logic
+- Easy to test
+- No external dependencies needed
 
 ### Alternative: AutoMapper (Optional)
 
@@ -251,7 +249,7 @@ public class MappingProfile : Profile
 }
 ```
 
-## ??? Security Benefits
+## Security Benefits
 
 ### 1. **Prevent Over-Posting**
 ```csharp
@@ -293,7 +291,7 @@ public class RegisterDto
 }
 ```
 
-## ?? Controller Implementation Pattern
+## Controller Implementation Pattern
 
 ```csharp
 [HttpPost("action")]
@@ -325,7 +323,7 @@ public async Task<IActionResult> Action([FromBody] RequestDto dto)
 }
 ```
 
-## ? Best Practices
+## Best Practices
 
 ### 1. **Naming Conventions**
 - Use `Dto` suffix: `UserDto`, `RegisterDto`
@@ -359,7 +357,7 @@ namespace FoodBridge.Server.DTOs.V1.Auth { }
 namespace FoodBridge.Server.DTOs.V2.Auth { }
 ```
 
-## ?? Testing DTOs
+## Testing DTOs
 
 ### Unit Test Example
 ```csharp
@@ -388,7 +386,7 @@ public void RegisterDto_WithValidData_PassesValidation()
 }
 ```
 
-## ?? Future Enhancements
+## Future Enhancements
 
 ### 1. **Inventory Management DTOs**
 ```csharp
@@ -415,7 +413,7 @@ public void RegisterDto_WithValidData_PassesValidation()
 - DonationHistoryDto
 ```
 
-## ?? Additional Resources
+## Additional Resources
 
 - [Microsoft DTOs Documentation](https://learn.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5)
 - [AutoMapper Documentation](https://docs.automapper.org/)
@@ -424,5 +422,4 @@ public void RegisterDto_WithValidData_PassesValidation()
 ---
 
 **Version**: 1.0.0
-**Last Updated**: 2024
-**Author**: FoodBridge Development Team
+**Last Updated**: 2025
