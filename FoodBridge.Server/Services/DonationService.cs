@@ -48,7 +48,6 @@ namespace FoodBridge.Server.Services
                     .ThenInclude(di => di.Product)
                     .AsQueryable();
 
-                // Filtering
                 query = ApplyFilters(query, filter);
 
                 // Search
@@ -60,10 +59,10 @@ namespace FoodBridge.Server.Services
                        d => d.Notes ?? string.Empty);
                 }
 
-                // Apply sorting
+
                 query = query.ApplySort(filter.SortBy, filter.SortDescending);
 
-                // Get paged results
+
                 var pagedResult = await query.ToPagedResultAsync(filter.PageNumber, filter.PageSize);
 
                 // Map to DTOs
@@ -111,7 +110,7 @@ namespace FoodBridge.Server.Services
                 var donation = dto.ToEntity(_mapper);
                 donation.Status = "Approved";
                 donation.CreatedAt = DateTime.UtcNow;
-                    
+
                 _context.Donations.Add(donation);
                 await _context.SaveChangesAsync();
 
@@ -174,8 +173,8 @@ namespace FoodBridge.Server.Services
                 var donation = await _context.Donations
             .Include(d => d.DonationItems)
             .Include(d => d.DonationReceipt)
-                 .Include(d => d.AuditTrail)
-             .FirstOrDefaultAsync(d => d.DonationId == id);
+            .Include(d => d.AuditTrail)
+            .FirstOrDefaultAsync(d => d.DonationId == id);
 
                 if (donation == null)
                     return false;
@@ -228,26 +227,28 @@ namespace FoodBridge.Server.Services
             {
                 // Get all DonationItemIds that are already in inventory
                 var inventoryItemIds = await _context.InventoryItems
-                    .Where(i => i.SourceDonationItemId > 0)
-                    .Select(i => i.SourceDonationItemId)
-                    .Distinct()
-                    .ToListAsync();
+             .Where(i => i.SourceDonationItemId > 0)
+             .Select(i => i.SourceDonationItemId)
+             .Distinct()
+             .ToListAsync();
 
-                // Get all donation items that are NOT in the inventory list
+                // Get all donation items from Approved donations
                 var availableItems = await _context.DonationItems
-                    .Include(di => di.Product)
-                    .Where(di => !inventoryItemIds.Contains(di.DonationItemId))
-                    .Select(di => new AvailableDonationItemDto
-                    {
-                        DonationItemId = di.DonationItemId,
-                        DonationId = di.DonationId,
-                        ProductId = di.ProductId,
-                        ProductName = di.Product.ProductName,
-                        Quantity = di.QuantityReceived,
-                        UnitType = di.UnitType,
-                        ExpirationDate = di.ExpirationDate
-                    })
-                    .ToListAsync();
+             .Include(di => di.Product)
+             .Include(di => di.Donation)
+             .Where(di => !inventoryItemIds.Contains(di.DonationItemId))
+             .Where(di => di.Donation.Status == "Approved")
+             .Select(di => new AvailableDonationItemDto
+             {
+                 DonationItemId = di.DonationItemId,
+                 DonationId = di.DonationId,
+                 ProductId = di.ProductId,
+                 ProductName = di.Product.ProductName,
+                 Quantity = di.QuantityReceived,
+                 UnitType = di.UnitType,
+                 ExpirationDate = di.ExpirationDate
+             })
+              .ToListAsync();
 
                 return availableItems;
             }
@@ -257,7 +258,6 @@ namespace FoodBridge.Server.Services
                 throw;
             }
         }
-
         private IQueryable<Donation> ApplyFilters(IQueryable<Donation> query, DonationFilterDto filter)
         {
             // Filter by DonorId only when a valid nullable value is provided

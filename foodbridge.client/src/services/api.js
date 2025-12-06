@@ -66,7 +66,6 @@ const normalizeResponse = (raw) => {
  return base;
 };
 
-// Remove empty string / null / undefined params to avoid400 model binding issues
 const cleanParams = (params = {}) => {
  return Object.fromEntries(
  Object.entries(params).filter(([_, v]) => v !== '' && v !== null && v !== undefined)
@@ -99,15 +98,7 @@ export const donationsAPI = {
  getDonationItems: async (id) => get(ep(`donations/${id}/items`)),
  getQualityInspection: async (id) => get(ep(`donations/${id}/inspection`)),
  getReceipt: async (id) => get(ep(`donations/${id}/receipt`)),
- getAvailableItems: async () => {
-        try {
-            const response = await api.get('/donations/available-items');
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching available donation items:', error);
-            throw error;
-        }
-    },
+ getAvailableItems: async () => get(ep('donations/available-items')),
 };
 
 export const inventoryAPI = {

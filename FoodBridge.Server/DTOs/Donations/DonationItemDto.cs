@@ -11,17 +11,17 @@ namespace FoodBridge.Server.DTOs.Donations
         public int ProductId { get; set; }
 
         [Required]
-  public int Quantity { get; set; }
+        public int Quantity { get; set; }
 
         [Required]
         [StringLength(50)]
-     public string UnitType { get; set; }
+        public string UnitType { get; set; }
 
-    public DateTime? ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
         public string Condition { get; set; }
 
-    public string Notes { get; set; }
+        public string Notes { get; set; }
     }
 
     /// <summary>
@@ -29,14 +29,14 @@ namespace FoodBridge.Server.DTOs.Donations
     /// </summary>
     public class UpdateDonationItemDto
     {
-     public int Quantity { get; set; }
+        public int Quantity { get; set; }
 
-    [StringLength(50)]
-  public string UnitType { get; set; }
+        [StringLength(50)]
+        public string UnitType { get; set; }
 
-     public DateTime? ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
- public string Condition { get; set; }
+        public string Condition { get; set; }
 
         public string Notes { get; set; }
     }
@@ -54,11 +54,11 @@ namespace FoodBridge.Server.DTOs.Donations
         public string Category { get; set; }
         public int Quantity { get; set; }
         public string UnitType { get; set; }
-    public DateTime? ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
         public string Condition { get; set; }
         public string Notes { get; set; }
         public string InspectionStatus { get; set; }
         public DateTime CreatedAt { get; set; }
-      public QualityInspectionDto QualityInspection { get; set; }
+        public QualityInspectionDto QualityInspection { get; set; }
     }
 }

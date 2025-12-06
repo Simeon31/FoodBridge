@@ -28,7 +28,6 @@ namespace FoodBridge.Server.Data.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation Properties
         [ForeignKey(nameof(SourceDonationItemId))]
         public DonationItem SourceDonationItem { get; set; }
 

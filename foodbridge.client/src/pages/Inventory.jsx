@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { inventoryAPI, productsAPI, donationsAPI } from '../services/api';
+import { inventoryAPI, donationsAPI } from '../services/api';
 import DataTable from '../components/common/DataTable';
 import { FormInput, FormSelect } from '../components/forms';
 
 const InventoryPage = () => {
-    const [inventory, setInventory] = useState([]);
-    const [products, setProducts] = useState([]);
+  const [inventory, setInventory] = useState([]);
     const [donationItems, setDonationItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,10 +22,13 @@ const InventoryPage = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     const [formData, setFormData] = useState({
-        sourceDonationItemId: '',  // ? Changed from productId
+        sourceDonationItemId: '',
         quantityOnHand: '',
         expirationDate: '',
-        dateReceived: new Date().toISOString().split('T')[0]
+        dateReceived: new Date().toISOString().split('T')[0],
+        storageLocationId: null,
+        isBlocked: false,
+        blockReason: ''
     });
     const [formErrors, setFormErrors] = useState({});
 
@@ -40,7 +42,7 @@ const InventoryPage = () => {
                 pageSize,
                 searchTerm,
                 sortBy: 'ProductName',
-                sortDescending: false 
+                sortDescending: false
             });
 
             if (response.success) {
@@ -51,55 +53,47 @@ const InventoryPage = () => {
         } catch (err) {
             console.error('Fetch inventory error:', err);
             setError(err.response?.data?.message || 'Failed to load inventory');
-            setInventory([]);  // Set empty array on error
+            setInventory([]);
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchProducts = async () => {
-        try {
-            const response = await productsAPI.getActive();
-            if (response.success) {
-                setProducts(response.data);
-            }
-        } catch (err) {
-            console.error('Failed to load products', err);
-        }
-    };
-
-    // ? NEW: Fetch available donation items (not yet in inventory)
     const fetchAvailableDonationItems = async () => {
         try {
-            const response = await donationsAPI.getAvailableItems();
-            
-            console.log('Available donation items response:', response); // Debug log
- 
-            if (response.success && response.data) {
-                const items = response.data.map(item => ({
-                    value: item.donationItemId,
-                    label: `${item.productName || 'Unknown Product'} - ${item.quantity} ${item.unitType || 'units'} (Donation #${item.donationId})`,
-                    donationItemId: item.donationItemId,
-                    productId: item.productId,
-                    productName: item.productName,
-                    quantity: item.quantity,
-                    unitType: item.unitType,
-                    expirationDate: item.expirationDate,
-                    donationId: item.donationId
-                }));
-                
-                console.log('Mapped available donation items:', items); // Debug log
-                setDonationItems(items);
-            }
+        const response = await donationsAPI.getAvailableItems();
+
+            console.log('Available donation items response:', response);
+
+         if (response.success) {
+     const data = response.data || [];
+   const items = data.map(item => ({
+      value: item.donationItemId,
+         label: `${item.productName || 'Unknown Product'} - ${item.quantity} ${item.unitType || 'units'} (Donation #${item.donationId})`,
+   donationItemId: item.donationItemId,
+        productId: item.productId,
+         productName: item.productName,
+        quantity: item.quantity,
+       unitType: item.unitType,
+                 expirationDate: item.expirationDate,
+           donationId: item.donationId
+           }));
+
+         console.log('Mapped available donation items:', items);
+    setDonationItems(items);
+    } else {
+            console.warn('Failed to fetch donation items:', response.message);
+     setDonationItems([]);
+      }
         } catch (err) {
-            console.error('Failed to load available donation items:', err);
+   console.error('Failed to load available donation items:', err);
             setError('Failed to load available donation items. Please try again.');
+    setDonationItems([]);
         }
     };
 
     useEffect(() => {
         fetchInventory();
-        fetchProducts();
         fetchAvailableDonationItems();
     }, [pageNumber]);
 
@@ -113,7 +107,10 @@ const InventoryPage = () => {
             sourceDonationItemId: '',
             quantityOnHand: '',
             expirationDate: '',
-            dateReceived: new Date().toISOString().split('T')[0]
+            dateReceived: new Date().toISOString().split('T')[0],
+            storageLocationId: null,
+            isBlocked: false,
+            blockReason: ''
         });
         setFormErrors({});
         setModalMode('create');
@@ -126,10 +123,13 @@ const InventoryPage = () => {
             if (response.success) {
                 setSelectedItem(response.data);
                 setFormData({
-                    sourceDonationItemId: response.data.sourceDonationItemId,
-                    quantityOnHand: response.data.quantityOnHand,
+                    sourceDonationItemId: response.data.sourceDonationItemId || '',
+                    quantityOnHand: response.data.quantityOnHand || '',
                     expirationDate: response.data.expirationDate ? response.data.expirationDate.split('T')[0] : '',
-                    dateReceived: response.data.dateReceived.split('T')[0]
+                    dateReceived: response.data.dateReceived ? response.data.dateReceived.split('T')[0] : new Date().toISOString().split('T')[0],
+                    storageLocationId: response.data.storageLocationId || null,
+                    isBlocked: response.data.isBlocked || false,
+                    blockReason: response.data.blockReason || ''
                 });
                 setModalMode('edit');
                 setShowModal(true);
@@ -159,87 +159,103 @@ const InventoryPage = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        
-        // ? When donation item is selected, auto-fill related fields
+
+        // When donation item is selected, auto-fill related fields
         if (name === 'sourceDonationItemId' && value) {
             const selectedDonationItem = donationItems.find(di => di.donationItemId === parseInt(value));
-            
+
             if (selectedDonationItem) {
                 console.log('Selected donation item:', selectedDonationItem);
-   
+
                 setFormData(prev => ({
                     ...prev,
                     sourceDonationItemId: value,
-                    quantityOnHand: selectedDonationItem.quantity || '',  // ? Fixed: use quantity
-                    expirationDate: selectedDonationItem.expirationDate 
-            ? new Date(selectedDonationItem.expirationDate).toISOString().split('T')[0] 
-       : '',  // ? Added: Auto-fill expiration date
+                    quantityOnHand: selectedDonationItem.quantity || '',  
+                    expirationDate: selectedDonationItem.expirationDate
+                        ? new Date(selectedDonationItem.expirationDate).toISOString().split('T')[0]
+                        : '', 
                     dateReceived: new Date().toISOString().split('T')[0]
-     }));
-       
-    // Clear error for this field
-         if (formErrors.sourceDonationItemId) {
-       setFormErrors(prev => ({ ...prev, sourceDonationItemId: null }));
-       }
-        return;
-       }
+                }));
+
+                // Clear error for this field
+                if (formErrors.sourceDonationItemId) {
+                    setFormErrors(prev => ({ ...prev, sourceDonationItemId: null }));
+                }
+                return;
+            }
         }
-        
+
         setFormData(prev => ({ ...prev, [name]: value }));
-  if (formErrors[name]) {
+        if (formErrors[name]) {
             setFormErrors(prev => ({ ...prev, [name]: null }));
         }
     };
 
     const validateForm = () => {
         const errors = {};
-    
-   if (!formData.sourceDonationItemId) {
- errors.sourceDonationItemId = 'Donation item is required';
-    }
-    
-  if (!formData.quantityOnHand || formData.quantityOnHand < 0) {
-    errors.quantityOnHand = 'Valid quantity is required';
+
+        if (!formData.sourceDonationItemId) {
+            errors.sourceDonationItemId = 'Donation item is required';
         }
 
-      // ? Validate quantity doesn't exceed donation quantity
-   const selectedItem = donationItems.find(
-     di => di.donationItemId === parseInt(formData.sourceDonationItemId)
-  );
-  if (selectedItem && parseInt(formData.quantityOnHand) > selectedItem.quantity) {
-       errors.quantityOnHand = `Quantity cannot exceed ${selectedItem.quantity} ${selectedItem.unitType || 'units'}`;
-  }
-        
+        if (formData.quantityOnHand === '' || formData.quantityOnHand === null || formData.quantityOnHand === undefined || parseInt(formData.quantityOnHand) < 0) {
+            errors.quantityOnHand = 'Valid quantity is required';
+        }
+
+        // Validate quantity doesn't exceed donation quantity
+        const selectedItem = donationItems.find(
+            di => di.donationItemId === parseInt(formData.sourceDonationItemId)
+        );
+        if (selectedItem && parseInt(formData.quantityOnHand) > selectedItem.quantity) {
+            errors.quantityOnHand = `Quantity cannot exceed ${selectedItem.quantity} ${selectedItem.unitType || 'units'}`;
+        }
+
         if (!formData.dateReceived) {
-      errors.dateReceived = 'Date received is required';
-}
-        
+            errors.dateReceived = 'Date received is required';
+        }
+
         setFormErrors(errors);
- return Object.keys(errors).length === 0;
+        return Object.keys(errors).length === 0;
     };
 
     const handleSave = async () => {
         if (!validateForm()) return;
 
         try {
-            const payload = {
-                sourceDonationItemId: parseInt(formData.sourceDonationItemId),
-                quantityOnHand: parseInt(formData.quantityOnHand),
-                dateReceived: formData.dateReceived,
-                expirationDate: formData.expirationDate || null
-            };
+            const sourceDonationItemId = parseInt(formData.sourceDonationItemId);
+            const quantityOnHand = parseInt(formData.quantityOnHand);
+
+            if (isNaN(sourceDonationItemId) || isNaN(quantityOnHand)) {
+                setError('Invalid form data. Please check your inputs.');
+                return;
+            }
 
             let response;
             if (modalMode === 'create') {
-                response = await inventoryAPI.create(payload);
+                const createPayload = {
+                    sourceDonationItemId: sourceDonationItemId,
+                    quantityOnHand: quantityOnHand,
+                    dateReceived: formData.dateReceived,
+                    expirationDate: formData.expirationDate || null,
+                    storageLocationId: formData.storageLocationId || null
+                };
+                response = await inventoryAPI.create(createPayload);
             } else {
-                response = await inventoryAPI.update(selectedItem.inventoryItemId, payload);
+                const updatePayload = {
+                    quantityOnHand: quantityOnHand,
+                    expirationDate: formData.expirationDate || null,
+                    storageLocationId: formData.storageLocationId || null,
+                    isBlocked: formData.isBlocked || false,
+                    blockReason: formData.blockReason || null
+                };
+                response = await inventoryAPI.update(selectedItem.inventoryItemId, updatePayload);
             }
 
             if (response.success) {
                 setSuccess(`Item ${modalMode === 'create' ? 'created' : 'updated'} successfully`);
                 setShowModal(false);
                 fetchInventory();
+                fetchAvailableDonationItems();
             }
         } catch (err) {
             setError(err.response?.data?.message || `Failed to ${modalMode} item`);
@@ -261,8 +277,8 @@ const InventoryPage = () => {
                 const days = row.daysUntilExpiration;
                 return (
                     <span className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${days < 0 ? 'bg-danger text-danger' :
-                            days <= 7 ? 'bg-warning text-warning' :
-                                'bg-success text-success'
+                        days <= 7 ? 'bg-warning text-warning' :
+                            'bg-success text-success'
                         }`}>
                         {days < 0 ? 'Expired' : `${days} days`}
                     </span>
@@ -271,13 +287,10 @@ const InventoryPage = () => {
         }
     ];
 
-    const productOptions = products.map(p => ({ value: p.productId, label: p.productName }));
-    const donationItemOptions = donationItems
-        .filter(di => di.productId) 
-        .map(di => ({ 
-            value: di.donationItemId, 
-            label: `${di.productName} - ${di.quantity} ${di.unitType || 'units'} (Donation #${di.donationId})`  // ? Fixed: use di.quantity
-   }));
+    const donationItemOptions = donationItems.map(di => ({
+    value: di.donationItemId,
+        label: `${di.productName} - ${di.quantity} ${di.unitType || 'units'} (Donation #${di.donationId})`
+    }));
 
     return (
         <div className="space-y-6">
@@ -350,76 +363,76 @@ const InventoryPage = () => {
                         <h3 className="text-xl font-semibold mb-6">{modalMode === 'create' ? 'Add' : 'Edit'} Inventory Item</h3>
 
                         {error && (
-         <div className="mb-4 rounded-lg border-l-[6px] border-danger bg-danger bg-opacity-10 px-4 py-3">
-      <p className="text-danger text-sm">{error}</p>
-           </div>
-         )}
+                            <div className="mb-4 rounded-lg border-l-[6px] border-danger bg-danger bg-opacity-10 px-4 py-3">
+                                <p className="text-danger text-sm">{error}</p>
+                            </div>
+                        )}
 
                         <div className="space-y-4">
-        <FormSelect 
-      label="Donation Item" 
-    name="sourceDonationItemId" 
-         value={formData.sourceDonationItemId} 
-    onChange={handleInputChange} 
-   options={donationItemOptions} 
-        error={formErrors.sourceDonationItemId} 
-           required 
-   placeholder="Select a donation item"
-        />
+                            <FormSelect
+                                label="Donation Item"
+                                name="sourceDonationItemId"
+                                value={formData.sourceDonationItemId}
+                                onChange={handleInputChange}
+                                options={donationItemOptions}
+                                error={formErrors.sourceDonationItemId}
+                                required
+                                placeholder="Select a donation item"
+                            />
 
-       {formData.sourceDonationItemId && (
-    <div className="rounded-lg border border-primary bg-primary bg-opacity-10 p-4">
-  <p className="text-sm text-primary">
-       <strong>Info:</strong> Quantity and product details will be populated from the selected donation item.
-              </p>
-         </div>
-         )}
+                            {formData.sourceDonationItemId && (
+                                <div className="rounded-lg border border-primary bg-primary bg-opacity-10 p-4">
+                                    <p className="text-sm text-primary">
+                                        <strong>Info:</strong> Quantity and product details will be populated from the selected donation item.
+                                    </p>
+                                </div>
+                            )}
 
-  <div className="grid grid-cols-2 gap-4">
-<FormInput 
-       label="Quantity (from donation)" 
-        name="quantityOnHand" 
-          type="number" 
-   value={formData.quantityOnHand} 
-       onChange={handleInputChange} 
-         error={formErrors.quantityOnHand} 
-          required 
-     placeholder="Auto-filled"
-          />
-               <FormInput 
-     label="Date Received" 
-           name="dateReceived" 
-     type="date" 
-     value={formData.dateReceived} 
-     onChange={handleInputChange} 
-           error={formErrors.dateReceived} 
-   required 
-/>
-   </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormInput
+                                    label="Quantity (from donation)"
+                                    name="quantityOnHand"
+                                    type="number"
+                                    value={formData.quantityOnHand}
+                                    onChange={handleInputChange}
+                                    error={formErrors.quantityOnHand}
+                                    required
+                                    placeholder="Auto-filled"
+                                />
+                                <FormInput
+                                    label="Date Received"
+                                    name="dateReceived"
+                                    type="date"
+                                    value={formData.dateReceived}
+                                    onChange={handleInputChange}
+                                    error={formErrors.dateReceived}
+                                    required
+                                />
+                            </div>
 
-      <FormInput 
-     label="Expiration Date (optional)" 
-         name="expirationDate" 
-     type="date" 
-        value={formData.expirationDate} 
-    onChange={handleInputChange} 
-      placeholder="Override donation expiration date"
-      />
+                            <FormInput
+                                label="Expiration Date (optional)"
+                                name="expirationDate"
+                                type="date"
+                                value={formData.expirationDate}
+                                onChange={handleInputChange}
+                                placeholder="Override donation expiration date"
+                            />
 
-     <div className="rounded-lg border border-stroke bg-gray p-4 dark:border-strokedark dark:bg-meta-4">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-      <strong>Note:</strong> Storage location management will be added in a future update.
-  </p>
-         </div>
- </div>
+                            <div className="rounded-lg border border-stroke bg-gray p-4 dark:border-strokedark dark:bg-meta-4">
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                    <strong>Note:</strong> Storage location management will be added in a future update.
+                                </p>
+                            </div>
+                        </div>
 
-  <div className="flex justify-end gap-3 mt-6">
-   <button onClick={() => setShowModal(false)} className="py-3 px-6 border rounded-md hover:bg-gray hover:bg-opacity-10">Cancel</button>
-   <button onClick={handleSave} className="py-3 px-6 bg-primary text-white rounded-md hover:bg-opacity-90">Save</button>
-  </div>
-    </div>
-         </div>
-  )}
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button onClick={() => setShowModal(false)} className="py-3 px-6 border rounded-md hover:bg-gray hover:bg-opacity-10">Cancel</button>
+                            <button onClick={handleSave} className="py-3 px-6 bg-primary text-white rounded-md hover:bg-opacity-90">Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showDeleteDialog && (
                 <div className="fixed inset-0 z-999999 flex items-center justify-center bg-black bg-opacity-50">

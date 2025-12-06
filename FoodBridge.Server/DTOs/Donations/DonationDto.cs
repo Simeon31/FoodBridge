@@ -62,7 +62,7 @@ namespace FoodBridge.Server.DTOs.Donations
     }
 
     /// <summary>
-    /// DTO for donation list view (summary)
+    /// DTO for donation list view
     /// </summary>
     public class DonationSummaryDto
     {
